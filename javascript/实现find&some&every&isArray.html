@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        const array = [14, 16, 30, 40, 51, 49];
+
+        
+        // 实现find
+        Array.prototype.myFind = function(fn) {
+            isArr = Object.prototype.toString.call(this) === '[object Array]';
+            if (!isArr) {
+                throw new TypeError(this + '.' + 'myFind is not a function');
+            }
+
+            for (let index = 0; index < this.length; index++) {
+                if (fn(this[index], index, this)) {
+                    return this[index];
+                }
+            }
+        }
+        let findResult = array.myFind((item, index, array) => item > 10);
+        console.log(findResult);
+
+
+        // 实现some
+        Array.prototype.mySome = function(fn) {
+            isArray = Object.prototype.toString.call(this) === '[object Array]';
+            if (!isArray) {
+                throw new TypeError(this + '.' + 'mySome is not a function');
+            }
+
+            for (let index = 0; index < this.length; index++) {
+                if (fn(this[index], index, this)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        let someResult = array.mySome((item, index, array) => item > 10);
+        console.log(someResult);
+
+
+        // 实现every
+        Array.prototype.myEvery = function(fn) {
+            isArr = Object.prototype.toString.call(this) === '[object Array]';
+            if (!isArr) {
+                throw new TypeError(this + '.' + 'myEvery is not a function');
+            }
+
+            for (let index = 0; index < this.length; index++) {
+                if (!fn(this[index], index, this)) {
+                    console.log(typeof(this[index]));
+                    return false;
+                }
+            }
+            return true;
+        }
+        let everyResult = array.myEvery((item, index, array) => typeof(item) === 'number');
+        console.log(everyResult);
+
+
+        // 实现isArray
+        Array.prototype.myIsArray = function(arr) {
+            return Object.prototype.toString.call(arr) === '[object Array]';
+        }
+        console.log(Array.myIsArray(array));
+    </script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // 柯里化就是把接受多个参数的函数变换成接受一个单一参数的函数，并且返回一个新函数，最后进行求值
+        function sum(a, b, c, d) {
+            return a + b + c + d;
+        }
+        // 柯里化函数
+        function curry(fn, ...args) {
+            console.log(args);
+            // 如果传递的参数还没有达到要执行的函数fn的个数就继续返回新的函数
+            // 并且返回curry函数传递剩下的参数
+            if (args.length < fn.length) {
+                return (...newArgs) => {
+                    console.log(newArgs);
+                    return curry(fn, ...args, ...newArgs);
+                }
+            } else {
+                return fn(...args);
+            }
+        }
+
+        let add = curry(sum);
+        console.log(add);
+        // console.log(add(1, 2, 3, 4));
+        console.log(add(1)(2)(3)(4));
+        // console.log(add(1, 2, 3)(4));
+        // console.log(add(1, 2)(3, 4));
+        // console.log(add(1)(2, 3)(4));
+    </script>
+</body>
+</html>
