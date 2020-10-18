@@ -235,11 +235,28 @@ exports.default = _default;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.diff = diff;
 exports.renderComponent = renderComponent;
 exports.setComponentProps = setComponentProps;
 exports.createComponent = createComponent;
 
+var _react = require("../react");
+
+var _dom = require("./dom");
+
 var _render2 = require("./render");
+
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 /**
  * @param {HTMLElement} dom 真实DOM
@@ -247,6 +264,237 @@ var _render2 = require("./render");
  * @param {HTMLElement} container 容器
  * @returns {HTMLElement} 更新后的DOM
 **/
+// 对比虚拟DOM和真是DOM最后返回更新后的DOM
+// diff的初衷：每次更新都重新渲染整个应用或者整个组件，DOM操作消耗性能很严重
+// 为了减少DOM更新带来的性能消耗，找到渲染前后真正变化的部分，只更新这一部分DOM
+function diff(dom, vnode, container) {
+  var ret = diffNode(dom, vnode);
+
+  if (container && ret.parentNode !== container) {
+    container.appendChild(ret);
+  }
+
+  return ret;
+}
+/* 
+    diffNode
+    对比节点自身
+*/
+
+
+function diffNode(dom, vnode) {
+  var out = dom;
+  if (vnode === undefined || vnode === null || typeof vnode === 'boolean') vnode = '';
+  if (typeof vnode === 'number') vnode = String(vnode); // diff text node
+
+  if (typeof vnode === "string") {
+    // 当前DOM节点是文本节点，直接更新内容
+    // nodeType: https://developer.mozilla.org/zh-CN/docs/Web/API/Node/nodeType
+    if (dom && dom.nodeType === 3) {
+      if (dom.textContent !== vnode) {
+        dom.textContent = vnode;
+      } // 如果DOM不是文本节点，则新建一个文本节点DOM，并移除掉原来的
+
+    } else {
+      out = document.createTextNode(vnode);
+
+      if (dom && dom.parentNode) {
+        dom.parentNode.replaceChild(out, dom);
+      }
+    } // 文本节点非常简单没有属性，没有子元素
+
+
+    return out;
+  }
+
+  if (typeof vnode.tag === 'function') {
+    return diffComponent(dom, vnode);
+  } // 情况一：如果真实DOM不存在，表示此节点是新增的，或者新旧两个节点的类型不一样，
+  // 那么就新建一个DOM元素，并将原来的子节点（如果有的话）移动到新建的DOM节点下。
+
+
+  if (!dom || !isSameNodeType(dom, vnode)) {
+    out = document.createElement(vnode.tag); // 不是同一类型的dom
+
+    if (dom) {
+      // 将原来的子节点移到新节点下
+      _toConsumableArray(dom.childNodes).map(out.appendChild);
+
+      if (dom.parentNode) {
+        // 移除掉原来的DOM对象
+        dom.parentNode.replaceChild(out, dom);
+      }
+    }
+  } // 情况二：如果真实DOM存在，并且和虚拟DOM是同一类型的，那我们暂时不需要做别的，
+  // 只需要等待后面对比属性和对比子节点。
+
+
+  if (vnode.children && vnode.children.length > 0 || out.childNodes && out.childNodes.length > 0) {
+    diffChildren(out, vnode.children);
+  }
+
+  diffAttributes(out, vnode);
+  return out;
+}
+/* 
+    diffChildren
+    对比子节点
+*/
+
+
+function diffChildren(dom, vchildren) {
+  // 对比子节点时，子节点是一个数组，它们可能改变了顺序，数量。很难确定要和虚拟DOM对比的是哪一个
+  // 这里就要为每一个子节点设一个key，重新渲染时对比key值相同的节点
+  var domChildren = dom.childNodes;
+  var children = [];
+  var keyed = {}; // 将有key的节点和没有key的节点分开
+
+  if (domChildren.length > 0) {
+    for (var index = 0; index < domChildren.length; index++) {
+      var child = domChildren[index];
+      var key = child.key;
+
+      if (key) {
+        keyed[key] = child;
+      } else {
+        children.push(child);
+      }
+    }
+  } // 虚拟DOM的children
+
+
+  if (vchildren && vchildren.length > 0) {
+    var min = 0;
+    var childrenLen = children.length;
+
+    for (var _index = 0; _index < vchildren.length; _index++) {
+      var vchild = vchildren[_index];
+      var _key = vchild.key;
+
+      var _child = void 0; // 如果有key的话，找到对应key值的节点
+
+
+      if (_key) {
+        if (keyed[_key]) {
+          _child = keyed[_key];
+          keyed[_key] = undefined;
+        }
+      } else if (min < childrenLen) {
+        for (var _index2 = min; _index2 < childrenLen; _index2++) {
+          var c = children[_index2];
+
+          if (c && isSameNodeType(c, vchild)) {
+            _child = c;
+            children[_index2] = undefined;
+
+            if (_index2 === childrenLen - 1) {
+              childrenLen--;
+            }
+
+            if (_index2 === min) {
+              min++;
+            }
+
+            break;
+          }
+        }
+      } // 对比
+
+
+      _child = diff(_child, vchild); // 更新DOM
+
+      var f = domChildren[_index];
+
+      if (_child && _child !== dom && _child !== f) {
+        // 如果更新前的对应位置为空，说明此节点时新增的
+        if (!f) {
+          dom.appendChild(_child); // 如果更新后的节点和更新前对应位置的下一个节点一样，说明当前位置的节点被移除了
+        } else if (_child === f.nextSibling) {
+          removeNode(f); // 将更新后的节点移动到正确的位置
+        } else {
+          // 注意insertBefore的用法，第一个参数是要插入的节点，第二个参数是已存在的节点
+          dom.insertBefore(_child, f);
+        }
+      }
+    }
+  }
+}
+/* 
+    diffComponent
+    对比组件
+*/
+
+
+function diffComponent(dom, vnode) {
+  var c = dom && dom._component;
+  var oldDom = dom; // 如果组件类型没有变化则重新set props
+
+  if (c && c.constructor === vnode.tag) {
+    setComponentProps(c, vnode.attrs);
+    dom = c.base; // 如果组件类型变化，则移除掉原来组件，并渲染新的组件
+  } else {
+    if (c) {
+      unmountComponent(c);
+      oldDom = null;
+    }
+
+    c = createComponent(vnode.tag, vnode.attrs);
+    setComponentProps(c, vnode.attrs);
+    dom = c.base;
+
+    if (oldDom && dom !== oldDom) {
+      oldDom._component = null;
+      removeNode(oldDom);
+    }
+  }
+
+  return dom;
+}
+
+function isSameNodeType(dom, vnode) {
+  if (typeof vnode === 'string' || typeof vnode === 'number') {
+    return dom.nodeType === 3;
+  }
+
+  if (typeof vnode.tag === 'string') {
+    return dom.nodeName.toLowerCase() === vnode.tag.toLowerCase();
+  }
+
+  return dom && dom._component && dom._component.constructor === vnode.tag;
+}
+/* 
+    diffAttributes
+    对比节点属性
+*/
+
+
+function diffAttributes(dom, vnode) {
+  // diff算法不仅要找出节点类型的变化，还要找出节点的属性以及事件监听的变化
+  var old = {}; // 当前DOM的属性
+
+  var attrs = vnode.attrs; // 虚拟DOM的属性
+  // 添加新的属性
+
+  for (var index = 0; index < dom.attributes.length; index++) {
+    var attr = dom.attributes[index];
+    old[attr.name] = attr.value;
+  } // 如果原来的属性不在新属性当中，则将其移除掉
+
+
+  for (var name in old) {
+    if (!(name in attrs)) {
+      (0, _dom.setAttribute)(dom, name, undefined);
+    }
+  } // 更新新的属性值
+
+
+  for (var _name in attrs) {
+    if (old[_name] !== attrs[_name]) {
+      (0, _dom.setAttribute)(dom, _name, attrs[_name]);
+    }
+  }
+}
+
 function renderComponent(component) {
   var base; // 调用组件的render函数返回dom对象
 
@@ -254,19 +502,19 @@ function renderComponent(component) {
 
   if (component.base && component.componentWillUpdate) {
     component.componentWillUpdate();
-  }
+  } // base = _render(renderer);
 
-  base = (0, _render2._render)(renderer);
+
+  base = diff(component.base, renderer);
 
   if (component.base) {
     if (component.componentDidUpdate) component.componentDidUpdate();
   } else if (component.componentDidMount) {
     component.componentDidMount();
-  }
-
-  if (component.base && component.base.parentNode) {
-    component.base.parentNode.replaceChild(base, component.base);
-  } // component.base保存组件实例最终渲染出来的DOM
+  } // if ( component.base && component.base.parentNode ) {
+  //     component.base.parentNode.replaceChild( base, component.base );
+  // }
+  // component.base保存组件实例最终渲染出来的DOM
   // 反过来base._component保存的是dom对象所对应的组件，这个就是为了把他们关联起来
 
 
@@ -305,7 +553,12 @@ function createComponent(component, props) {
 
   return inst;
 }
-},{"./render":"src/react-dom/render.js"}],"src/react/component.js":[function(require,module,exports) {
+
+function unmountComponent(component) {
+  if (component.componentWillUnmount) component.componentWillUnmount();
+  removeNode(component.base);
+}
+},{"../react":"src/react/index.js","./dom":"src/react-dom/dom.js","./render":"src/react-dom/render.js"}],"src/react/component.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
