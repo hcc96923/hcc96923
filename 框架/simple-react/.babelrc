@@ -6,3 +6,5 @@
         }]
     ]
 }
+
+// 区分组件和原生DOM的工作，是babel-plugin-transform-react-jsx帮我们做的
