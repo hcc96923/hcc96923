@@ -616,6 +616,9 @@ exports.default = void 0;
     React.createElement
     jsx片段会被转译成用React.createElement方法包裹的代码
     返回一个对象来保存它的信息
+    tag 标签名
+    attrs 一个对象包含了所有的属性
+    ...children 所有的子节点
 */
 function createElement(tag, attrs) {
   attrs = attrs || {};
@@ -739,13 +742,11 @@ var Conuter = /*#__PURE__*/function (_React$Component2) {
 
   _createClass(Conuter, [{
     key: "componentWillUpdate",
-    value: function componentWillUpdate() {
-      console.log('update');
+    value: function componentWillUpdate() {// console.log( 'update' );
     }
   }, {
     key: "componentWillMount",
-    value: function componentWillMount() {
-      console.log('mount');
+    value: function componentWillMount() {// console.log( 'mount' );
     }
   }, {
     key: "onClick",
@@ -759,11 +760,14 @@ var Conuter = /*#__PURE__*/function (_React$Component2) {
     value: function render() {
       var _this2 = this;
 
+      // transform-react-jsx是将jsx转换为js的babel插件
+      // 它有一个pragma项，可以定义jsx转换方法的名称。
+      // 首先jsx片段会被转译成用React.createElement方法包裹的代码
       return _react.default.createElement("div", {
         onClick: function onClick() {
           return _this2.onClick();
         }
-      }, _react.default.createElement("h1", null, "number: ", this.state.num), _react.default.createElement("button", null, "add"));
+      }, "Hello World", _react.default.createElement("h1", null, "number: ", this.state.num), _react.default.createElement("button", null, "add"));
     }
   }]);
 
@@ -799,7 +803,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55000" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62213" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
