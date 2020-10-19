@@ -283,6 +283,7 @@ function diff(dom, vnode, container) {
 
 
 function diffNode(dom, vnode) {
+  // 从上到下，从左往右逐个处理每个dom节点（如果是修改的话）和vnode
   var out = dom;
   if (vnode === undefined || vnode === null || typeof vnode === 'boolean') vnode = '';
   if (typeof vnode === 'number') vnode = String(vnode); // diff text node
@@ -293,7 +294,7 @@ function diffNode(dom, vnode) {
     if (dom && dom.nodeType === 3) {
       if (dom.textContent !== vnode) {
         dom.textContent = vnode;
-      } // 如果DOM不是文本节点，则新建一个文本节点DOM，并移除掉原来的
+      } // 如果DOM不是文本节点，则新建一个文本节点DOM，并移除掉原来的。新建的文本节点把原来的节点的位置占用了
 
     } else {
       out = document.createTextNode(vnode);
@@ -305,7 +306,8 @@ function diffNode(dom, vnode) {
 
 
     return out;
-  }
+  } // diff组件
+
 
   if (typeof vnode.tag === 'function') {
     return diffComponent(dom, vnode);
@@ -347,7 +349,7 @@ function diffChildren(dom, vchildren) {
   // 这里就要为每一个子节点设一个key，重新渲染时对比key值相同的节点
   var domChildren = dom.childNodes;
   var children = [];
-  var keyed = {}; // 将有key的节点和没有key的节点分开
+  var keyed = {}; // 划分节点：将有key的节点和没有key的节点分开
 
   if (domChildren.length > 0) {
     for (var index = 0; index < domChildren.length; index++) {
@@ -355,8 +357,10 @@ function diffChildren(dom, vchildren) {
       var key = child.key;
 
       if (key) {
+        // 有key的
         keyed[key] = child;
       } else {
+        // 没有key的
         children.push(child);
       }
     }
@@ -371,7 +375,7 @@ function diffChildren(dom, vchildren) {
       var vchild = vchildren[_index];
       var _key = vchild.key;
 
-      var _child = void 0; // 如果有key的话，找到对应key值的节点
+      var _child = void 0; // 如果有key的话，在当前dom的子节点有key的对象中也找得到则更新子节点的值
 
 
       if (_key) {
@@ -380,10 +384,13 @@ function diffChildren(dom, vchildren) {
           keyed[_key] = undefined;
         }
       } else if (min < childrenLen) {
+        // 子节点存在的话
         for (var _index2 = min; _index2 < childrenLen; _index2++) {
-          var c = children[_index2];
+          // 虚拟节点没有key的节点数小于当前dom没有key的节点数
+          var c = children[_index2]; // 当前没有key的dom
 
           if (c && isSameNodeType(c, vchild)) {
+            // 当前没有key的dom是否存在，可能被删除了
             _child = c;
             children[_index2] = undefined;
 
@@ -450,6 +457,43 @@ function diffComponent(dom, vnode) {
 
   return dom;
 }
+/* 
+    diffAttributes
+    对比节点属性
+*/
+
+
+function diffAttributes(dom, vnode) {
+  // diff算法不仅要找出节点类型的变化，还要找出节点的属性以及事件监听的变化
+  var old = {}; // 当前DOM的属性
+
+  var attrs = vnode.attrs; // 虚拟DOM的属性
+  // 获取当前DOM节点的属性
+
+  for (var index = 0; index < dom.attributes.length; index++) {
+    var attr = dom.attributes[index];
+    old[attr.name] = attr.value;
+  } // 如果原来的属性不在新属性当中，则将其移除掉
+
+
+  for (var name in old) {
+    if (!(name in attrs)) {
+      (0, _dom.setAttribute)(dom, name, undefined);
+    }
+  } // 更新当前dom的属性值
+
+
+  for (var _name in attrs) {
+    if (old[_name] !== attrs[_name]) {
+      (0, _dom.setAttribute)(dom, _name, attrs[_name]);
+    }
+  }
+}
+/* 
+    isSameNodeType
+    是否是同一类型的node
+*/
+
 
 function isSameNodeType(dom, vnode) {
   if (typeof vnode === 'string' || typeof vnode === 'number') {
@@ -463,37 +507,10 @@ function isSameNodeType(dom, vnode) {
   return dom && dom._component && dom._component.constructor === vnode.tag;
 }
 /* 
-    diffAttributes
-    对比节点属性
+    renderComponent
+    渲染组件
 */
 
-
-function diffAttributes(dom, vnode) {
-  // diff算法不仅要找出节点类型的变化，还要找出节点的属性以及事件监听的变化
-  var old = {}; // 当前DOM的属性
-
-  var attrs = vnode.attrs; // 虚拟DOM的属性
-  // 添加新的属性
-
-  for (var index = 0; index < dom.attributes.length; index++) {
-    var attr = dom.attributes[index];
-    old[attr.name] = attr.value;
-  } // 如果原来的属性不在新属性当中，则将其移除掉
-
-
-  for (var name in old) {
-    if (!(name in attrs)) {
-      (0, _dom.setAttribute)(dom, name, undefined);
-    }
-  } // 更新新的属性值
-
-
-  for (var _name in attrs) {
-    if (old[_name] !== attrs[_name]) {
-      (0, _dom.setAttribute)(dom, _name, attrs[_name]);
-    }
-  }
-}
 
 function renderComponent(component) {
   var base; // 调用组件的render函数返回dom对象
@@ -521,6 +538,11 @@ function renderComponent(component) {
   component.base = base;
   base._component = component;
 }
+/* 
+    setComponentProps
+    设置组件属性
+*/
+
 
 function setComponentProps(component, props) {
   if (!component.base) {
@@ -536,6 +558,11 @@ function setComponentProps(component, props) {
     renderComponent(component);
   }
 }
+/* 
+    createComponent
+    创建组件实例
+*/
+
 
 function createComponent(component, props) {
   var inst; // 如果是类定义组件，则直接返回实例
@@ -558,7 +585,68 @@ function unmountComponent(component) {
   if (component.componentWillUnmount) component.componentWillUnmount();
   removeNode(component.base);
 }
-},{"../react":"src/react/index.js","./dom":"src/react-dom/dom.js","./render":"src/react-dom/render.js"}],"src/react/component.js":[function(require,module,exports) {
+},{"../react":"src/react/index.js","./dom":"src/react-dom/dom.js","./render":"src/react-dom/render.js"}],"src/react/set-state-queue.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.enqueueSetState = enqueueSetState;
+
+var _diff = require("../react-dom/diff");
+
+var setStateQueue = [];
+var renderQueue = [];
+
+function defer(fn) {
+  return Promise.resolve().then(fn);
+}
+
+function enqueueSetState(stateChange, component) {
+  if (setStateQueue.length === 0) {
+    defer(flush);
+  }
+
+  setStateQueue.push({
+    stateChange: stateChange,
+    component: component
+  });
+
+  if (!renderQueue.some(function (item) {
+    return item === component;
+  })) {
+    renderQueue.push(component);
+  }
+}
+
+function flush() {
+  var item, component;
+
+  while (item = setStateQueue.shift()) {
+    var _item = item,
+        stateChange = _item.stateChange,
+        _component = _item.component; // 如果没有prevState，则将当前的state作为初始的prevState
+
+    if (!_component.prevState) {
+      _component.prevState = Object.assign({}, _component.state);
+    } // 如果stateChange是一个方法，也就是setState的第二种形式
+
+
+    if (typeof stateChange === 'function') {
+      Object.assign(_component.state, stateChange(_component.prevState, _component.props));
+    } else {
+      // 如果stateChange是一个对象，则直接合并到setState中
+      Object.assign(_component.state, stateChange);
+    }
+
+    _component.prevState = _component.state;
+  }
+
+  while (component = renderQueue.shift()) {
+    (0, _diff.renderComponent)(component);
+  }
+}
+},{"../react-dom/diff":"src/react-dom/diff.js"}],"src/react/component.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -566,7 +654,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _diff = require("../react-dom/diff");
+var _setStateQueue = require("./set-state-queue");
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -585,17 +673,13 @@ var Component = /*#__PURE__*/function () {
 
     this.state = {};
     this.props = props;
-  } // 组件内部的state和渲染相关，state改变时通常会出发渲染，为了让react
-  // 直到我们改变了state，我们只能通过setState方法修改数据
+  } // 组件内部的state和渲染相关，state改变时通常会出发渲染，为了让react知道我们改变了state，我们只能通过setState方法修改数据
 
 
   _createClass(Component, [{
     key: "setState",
     value: function setState(stateChange) {
-      // 将修改合并到state
-      Object.assign(this.state, stateChange); // 在每次更新state后，需要调用renderComponent方法重新渲染组件
-
-      (0, _diff.renderComponent)(this);
+      (0, _setStateQueue.enqueueSetState)(stateChange, this);
     }
   }]);
 
@@ -604,7 +688,7 @@ var Component = /*#__PURE__*/function () {
 
 var _default = Component;
 exports.default = _default;
-},{"../react-dom/diff":"src/react-dom/diff.js"}],"src/react/create-element.js":[function(require,module,exports) {
+},{"./set-state-queue":"src/react/set-state-queue.js"}],"src/react/create-element.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -630,7 +714,8 @@ function createElement(tag, attrs) {
   return {
     tag: tag,
     attrs: attrs,
-    children: children
+    children: children,
+    key: attrs.key || null
   };
 }
 
@@ -742,32 +827,34 @@ var Conuter = /*#__PURE__*/function (_React$Component2) {
 
   _createClass(Conuter, [{
     key: "componentWillUpdate",
-    value: function componentWillUpdate() {// console.log( 'update' );
+    value: function componentWillUpdate() {
+      console.log('update');
     }
   }, {
     key: "componentWillMount",
-    value: function componentWillMount() {// console.log( 'mount' );
+    value: function componentWillMount() {
+      // console.log( 'mount' );
+      for (var i = 0; i < 100; i++) {
+        this.setState(function (prevState) {
+          console.log(prevState.num);
+          return {
+            num: prevState.num + 1
+          };
+        });
+      }
     }
   }, {
-    key: "onClick",
-    value: function onClick() {
-      this.setState({
-        num: this.state.num + 1
-      });
+    key: "componentDidMount",
+    value: function componentDidMount() {// 执行这段代码会导致这个组件被重新渲染100次，这对性能是一个非常大的负担
+      // react会将多个setState的调用合并成一个来执行，这意味着setState的时候state并不会立即执行
     }
   }, {
     key: "render",
     value: function render() {
-      var _this2 = this;
-
       // transform-react-jsx是将jsx转换为js的babel插件
       // 它有一个pragma项，可以定义jsx转换方法的名称。
       // 首先jsx片段会被转译成用React.createElement方法包裹的代码
-      return _react.default.createElement("div", {
-        onClick: function onClick() {
-          return _this2.onClick();
-        }
-      }, "Hello World", _react.default.createElement("h1", null, "number: ", this.state.num), _react.default.createElement("button", null, "add"));
+      return _react.default.createElement("div", null, _react.default.createElement("h1", null, this.state.num));
     }
   }]);
 

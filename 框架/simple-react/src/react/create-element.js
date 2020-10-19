@@ -13,7 +13,8 @@ function createElement (tag, attrs, ...children) {
     return {
         tag,
         attrs,
-        children
+        children,
+        key: attrs.key || null
     }
 }
 

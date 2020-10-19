@@ -27,6 +27,7 @@ export function diff(dom, vnode, container) {
     对比节点自身
 */
 function diffNode(dom, vnode) {
+    // 从上到下，从左往右逐个处理每个dom节点（如果是修改的话）和vnode
     let out = dom;
     if ( vnode === undefined || vnode === null || typeof vnode === 'boolean' ) vnode = '';
 
@@ -40,7 +41,7 @@ function diffNode(dom, vnode) {
             if (dom.textContent !== vnode) {
                 dom.textContent = vnode;
             }
-        // 如果DOM不是文本节点，则新建一个文本节点DOM，并移除掉原来的
+        // 如果DOM不是文本节点，则新建一个文本节点DOM，并移除掉原来的。新建的文本节点把原来的节点的位置占用了
         } else {
             out = document.createTextNode(vnode);
             if (dom && dom.parentNode) {
@@ -51,10 +52,10 @@ function diffNode(dom, vnode) {
         return out;
     }
 
+    // diff组件
     if (typeof vnode.tag === 'function') {
         return diffComponent(dom, vnode);
     }
-
     // 情况一：如果真实DOM不存在，表示此节点是新增的，或者新旧两个节点的类型不一样，
     // 那么就新建一个DOM元素，并将原来的子节点（如果有的话）移动到新建的DOM节点下。
     if (!dom || !isSameNodeType( dom, vnode )) {
@@ -63,8 +64,7 @@ function diffNode(dom, vnode) {
         // 不是同一类型的dom
         if (dom) {
             // 将原来的子节点移到新节点下
-            [...dom.childNodes ].map(out.appendChild);
-
+            [...dom.childNodes].map(out.appendChild);
             if (dom.parentNode) {
                 // 移除掉原来的DOM对象
                 dom.parentNode.replaceChild(out, dom);
@@ -95,14 +95,16 @@ function diffChildren(dom, vchildren) {
 
     const keyed = {};
 
-    // 将有key的节点和没有key的节点分开
+    // 划分节点：将有key的节点和没有key的节点分开
     if (domChildren.length > 0) {
         for (let index = 0; index < domChildren.length; index++) {
             const child = domChildren[index];
             const key = child.key;
             if (key) {
+                // 有key的
                 keyed[key] = child;
             } else {
+                // 没有key的
                 children.push(child);
             }
         }
@@ -118,16 +120,16 @@ function diffChildren(dom, vchildren) {
             const key = vchild.key;
             let child;
 
-            // 如果有key的话，找到对应key值的节点
+            // 如果有key的话，在当前dom的子节点有key的对象中也找得到则更新子节点的值
             if (key) {
                 if (keyed[key]) {
                     child = keyed[key];
                     keyed[key] = undefined;
                 }
-            } else if (min < childrenLen) {
-                for (let index = min; index < childrenLen; index++) {
-                    let c = children[index];
-                    if (c && isSameNodeType( c, vchild )) {
+            } else if (min < childrenLen) { // 子节点存在的话
+                for (let index = min; index < childrenLen; index++) { // 虚拟节点没有key的节点数小于当前dom没有key的节点数
+                    let c = children[index]; // 当前没有key的dom
+                    if (c && isSameNodeType( c, vchild )) { // 当前没有key的dom是否存在，可能被删除了
                         child = c;
                         children[index] = undefined;
                         if (index === childrenLen -1 ) {
@@ -193,17 +195,6 @@ function diffComponent(dom, vnode) {
     }
     return dom;
 }
-function isSameNodeType( dom, vnode ) {
-    if ( typeof vnode === 'string' || typeof vnode === 'number' ) {
-        return dom.nodeType === 3;
-    }
-
-    if ( typeof vnode.tag === 'string' ) {
-        return dom.nodeName.toLowerCase() === vnode.tag.toLowerCase();
-    }
-
-    return dom && dom._component && dom._component.constructor === vnode.tag;
-}
 /* 
     diffAttributes
     对比节点属性
@@ -212,7 +203,7 @@ function diffAttributes( dom, vnode ) {
     // diff算法不仅要找出节点类型的变化，还要找出节点的属性以及事件监听的变化
     const old = {}; // 当前DOM的属性
     const attrs = vnode.attrs; // 虚拟DOM的属性
-    // 添加新的属性
+    // 获取当前DOM节点的属性
     for (let index = 0; index < dom.attributes.length; index++) {
         const attr = dom.attributes[index];
         old[attr.name] = attr.value;
@@ -225,13 +216,32 @@ function diffAttributes( dom, vnode ) {
         }
     }
 
-    // 更新新的属性值
+    // 更新当前dom的属性值
     for (let name in attrs) {
         if (old[name] !== attrs[name]) {
             setAttribute(dom, name, attrs[name]);
         }
     }
 }
+/* 
+    isSameNodeType
+    是否是同一类型的node
+*/
+function isSameNodeType( dom, vnode ) {
+    if ( typeof vnode === 'string' || typeof vnode === 'number' ) {
+        return dom.nodeType === 3;
+    }
+
+    if ( typeof vnode.tag === 'string' ) {
+        return dom.nodeName.toLowerCase() === vnode.tag.toLowerCase();
+    }
+
+    return dom && dom._component && dom._component.constructor === vnode.tag;
+}
+/* 
+    renderComponent
+    渲染组件
+*/
 export function renderComponent(component) {
     let base;
     // 调用组件的render函数返回dom对象
@@ -258,6 +268,10 @@ export function renderComponent(component) {
     component.base = base;
     base._component = component;
 }
+/* 
+    setComponentProps
+    设置组件属性
+*/
 export function setComponentProps(component, props) {
     if (!component.base) {
         if (component.componentWillMount) {
@@ -272,6 +286,10 @@ export function setComponentProps(component, props) {
         renderComponent(component);
     }
 }
+/* 
+    createComponent
+    创建组件实例
+*/
 export function createComponent(component, props) {
     let inst;
     // 如果是类定义组件，则直接返回实例
