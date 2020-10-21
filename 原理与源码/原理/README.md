@@ -11,7 +11,6 @@
 - map默认返回数组元素为undefined，否则返回一个新的数组不改变原数组
 - reduce默认返回undefined
 - reduce(callback(accumulator, currentValue, index, array), initialValue)
-
 ### call
 - 改变this的指向
 - 传入参数
@@ -43,7 +42,6 @@
     add(1)(2);
     // 3
 ```
-
 ### 深浅拷贝原理
 - 什么是浅拷贝，这个对象有着原始对象属性值的一份精确拷贝。如果属性是基本类型，拷贝的就是这个基本类型的值，如果属性是引用类型，拷贝的就是内存地址，所以如果其中一个对象改变了这个地址，就会影响到另一个对象。
 - 简单的来说浅拷贝解决了第一层的问题，拷贝第一层的基本类型值，以及第一层的引用类型地址。
@@ -60,19 +58,13 @@
   - typeof {} // object
   - typeof [] // object
   - typeof function foo(){} // function
-
-
 ### Object.prototype是浏览器根据ECMAScript规范创造的一个对象
 - Object.prototype就是原型链的顶端（不考虑null的情况下）,所有对象继承了toString等方法和属性。
-
-
 ### 高阶函数
 - 接受一个或多个函数作为输入/输出一个函数。
 - 高阶函数就是一个接收函数作为参数传递或者将函数作为返回值输出的函数。
 - JavaScript内置了一些高阶函数forEach，map，some，every，filter
 - JavaScript打印函数时会自动调用toString方法
-
-
 ### EventLoop
 - 进程是程序运行的一次过程(CPU分配内存的基本单位)
 - 线程共享进程所有资源是执行一段指令的过程(CPU调度和分派的基本单位)
@@ -143,3 +135,25 @@
     - 异步http请求线程只关注http请求也不关心结果，http请求状态改变之后，就把回调扔给事件触发线程。
     - 事件触发线程只关心异步回调加入事件队列
     - JS引擎线程只会执行执行栈中的事件，执行栈中的代码执行完毕，就会读取事件队列中的事件并添加执行栈中继续执行，这样循环往复就是Event Loop事件轮询
+### 重学ES6
+- js有一个顶层对象，它提供全局环境（全局作用域），所有的代码都是在这个环境中执行的。浏览器的顶层对象时window对象，Node指的是global对象
+- 暂时死区
+  - 时间上暂时无法达到的区域
+  - ES6标准指出：let/const声明的变量，当它们包含的词法环境被实例化时（程序的控制流程在新的作用域进行实例化时）它们会被创建（此作用域中的let/const声明的白能量会先在作用域中被创建出来，但因此时还未进行此法绑定，也就是对声明语句进行求值运算，所以是不能被访问的，访问就会抛出错误，所以在变量进入作用域它们的词法环境被实例化，但是变量还没求值，所以这段时间内不能访问），但只有在变量的词法绑定已经被求值运算后，才能够被访问。
+  - 箭头函数的this来自上下文的词法环境（上层this），call，bind，apply也无法改变。箭头函数不能作为构造函数
+  - Promsie解决了什么？回调地狱，第三方库的回调函数不确定回调的结果/错误的结果交给第三方库处理不信任
+  - Promise是一个状态机初始状态时pending变为fulfilled或rejected。必须有Promise实例主动调用then把结果从Promise中取出来，调用catch把错误的结果取出来。这样主动权就回到了开发者手上
+  - ES6 Module使用import导入模块，export导出模块
+    - ES6 Module是静态的，编译阶段运行，和var和function一样具有提升效果（这个特点使得它支持tree shaking）
+    - 自动采用严格模式（顶层的this返回undefined）
+- 数据类型
+  - Undefined
+    - undefined
+  - Null
+    - null
+  - String
+  - Number
+  - Boolean
+    - true/false
+  - Object(包含Array、Function、Date、RegExp、Error)
+  - Symbol
