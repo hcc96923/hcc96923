@@ -201,3 +201,8 @@
     - 编码的结果末尾有个=号
     - 可以解码
     - ![Base64](./Snipaste_2020-10-22_16-05-00.png)
+  - JWT算法主要分为3个部分：header(头部信息)，payload(消息体)，signature(签名) 
+    - header部分指定了该JWT使用的签名算法：header = '{"alg":"HS256","type":"JWT"}'
+    - payload部分声明了token的iss(签发者)，sub(所面向的用户)，exp(过期时间)和自定义的数据
+    - signature部分为jwt的签名，主要为了让jwt不能随意篡改
+    - ![JWT实现原理](./JWT实现原理.png)
