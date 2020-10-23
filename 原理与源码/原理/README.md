@@ -82,9 +82,11 @@
   - 异步：setTimeout，setInterval，I/O，UI操作，Promise
     - 异步代码会被加到任务队列中，任务队列分为两种
     - 宏任务队列可以有多个script(同步代码)，setTimeout，setInterval，I/O
-    - 微任务只有一个队列异步：Promise.then(), catch(), finally()
+    - 微任务只有一个队列异步：Promise.then(), catch(), finally()，ajax
     - 浏览器会先执行一个宏任务——再执行当前执行栈产生的微任务——再进行渲染，然后再执行下一个宏任务。宏任务与微任务不在一个任务队列。
     - await前面的代码相当于new Promise的同步代码，await以后的代码相当于Promise.then的异步代码
+- EventLoop + GUI执行顺序
+  - ![EventLoop + GUI](./Snipaste_2020-10-23_13-34-15.png)
 - JS是单线程的，所有的同步任务都会放在主线程中执行。主线程之外，还有一个任务队列。每当一个异步任务有了结果就会往任务队列里塞一个事件。当主线程中的任务，都执行完成以后，JS引擎会依次读取任务队列里的事件。然后进入主线程开始执行
 - JS的单线程就是主线程同步代码在主线程上执行完成以后，执行栈会把异步代码调到主线程执行
 ### JS运行机制
@@ -155,8 +157,26 @@
   - Number
   - Boolean
     - true/false
-  - Object(包含Array、Function、Date、RegExp、Error)
+  - Object(包含Function、Array、Date、RegExp、Error、Math)
   - Symbol
+  - BigInt是一种新的数据类型，用于当整数值大于Number数据类型支持的范围时。
+    - 在JS中所有的数字都以双精度64位浮点格式来表示，这导致JS中的Number无法精确表示非常大的整数，它会将非常大的整数四舍五入
+    - `BigInt("9007199254740995");    // → 9007199254740995n`
+- null是对象嘛？为什么？
+  - null不是对象。
+  - 虽然typeof null会输出object，但是这是js存在的一个悠久的bug。在JS的最初版本中使用的32位系统，为了性能考虑使用低位存储变量的类型信息，000开头代表是对象然而null表示为全零，所以将它错误的判断为object
+- '1'.toString()为什么可以调用？
+  - 这个语句运行的过程中做了这样几件事情：
+  - `var s = new Object('1');` // 创建Object类实例由于Symbol和BigInt的出现，对它们调用new都会报错，目前ES6规范也不建议用new来创建基本类型的包装类
+  - `s.toString()` // 调用实例方法
+  - `s = null` // 执行完方法立即销毁这个实例
+- JS中类型转换有哪几种？
+  - js中类型转换只有三种：
+  - 转换成数字
+  - 转换成布尔值
+  - 转换成字符串
+  - ![JS类型转换](./16de9512eaf1158a.png)
+  - ![JS==判等](./Snipaste_2020-10-23_14-34-22.png)
 ### DOM事件流之事件捕获以及事件冒泡
 - DOM事件流
   - dom事件流分为三个阶段：
