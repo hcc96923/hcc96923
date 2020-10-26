@@ -728,7 +728,9 @@
 
   Dep.prototype.depend = function depend () {
     if (Dep.target) {
+      console.log(this);
       Dep.target.addDep(this);
+      console.log(this.subs);
     }
   };
 

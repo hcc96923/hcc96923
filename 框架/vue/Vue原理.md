@@ -320,3 +320,8 @@ class Watcher {
     }, 
 }
 ```
+### Vue异步更新
+- ![vue异步更新](./vue异步更新.png)
+- ![vue异步更新](./image-20200816114823688.png)
+- ![vue异步更新](./image-20200816153911974.png)
+- Vue在调用Watcher更新视图时，并不会直接进行更新，而是把需要更新的Watcher加入到Queue队列里，然后把具体的更新方法flushSchedulerQueue传给nextTick进行调用

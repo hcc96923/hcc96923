@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+        <h1>Count：{{count}}</h1>
+        <h1>ComputedCount：{{computedCount}}</h1>
+        <h1>Level：{{level}}</h1>
+        <h1>watchLevel：{{level}}</h1>
+        <!-- <h1>Message：{{message}}</h1> -->
+        <button @click="addCount">addCount</button>
+        <!-- <button @click="addLevel">addLevel</button> -->
+    </div>
+    <script src="./vue.js"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data() {
+                return {
+                    count: 0,
+                    level: 0,
+                    message: 'Hello World'
+                }
+            },
+            create() {
+
+            },
+            methods: {
+                addCount() {
+                    this.count++;
+                },
+                addLevel() {
+                    this.level++;
+                }
+            },
+            computed: {
+                computedCount() {
+                    return this.count + 10;
+                }
+            },
+            watch: {
+                level(newValue) {
+                    return newValue;
+                }
+            }
+        })
+    </script>
+</body>
+</html>
