@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        const array = [4, 5, 6, 3, 2, 1];
+        /* 
+            冒泡排序
+        */
+        const bubbleSort = (array) => {
+            const length = array.length;
+            for (let i = 0; i < length - 1; i++) {
+                for (let j = 0; j < length - i - 1; j++) {
+                    if (array[j] > array[j+1]) {
+                        let temp = array[j];
+                        array[j] = array[j+1];
+                        array[j+1] = temp;
+                    }
+                }
+            }
+            return array;
+        }
+        /* 
+            插入排序
+        */
+        const insertSort = (array) => {
+            const length = array.length;
+            for (let i = 1; i < length; i++) {
+                let value = array[i];
+                let j = i - 1
+                // 查找插入的位置
+                for (; j >= 0; j--) {
+                    if (array[j] > value) {
+                        array[j+1] = array[j]; // 数据移动
+                    } else {
+                        break;
+                    }
+                }
+                array[j+1] = value; // 插入数据
+            }
+            return array;
+        }
+        console.log(insertSort(array)); 
+    </script>
+</body>
+</html>
