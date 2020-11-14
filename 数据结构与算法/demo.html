@@ -7,22 +7,13 @@
 </head>
 <body>
     <script>
-        /**
-         * @param {string} s
-         * @return {boolean}
-         */
-        var isValid = function(s) {
-            while (s.length) {
-                let old = s;
-                s = s.replace("{}", "").replace("[]", "").replace("()", "");
-                if (old === s) { // 没有消掉
-                    return false;
-                }
-                console.log(s);
+        var rescursion = (n) => {
+            if (n === 1) {
+                return 1;
             }
-            return s === ""; //全部消掉了
-        };
-        console.log(isValid("(([])")); 
+            return rescursion(n-1) + 1;
+        }
+        console.log(rescursion(10)); 
     </script>
 </body>
 </html>
