@@ -7,14 +7,14 @@
 </head>
 <body>
     <script>
-        const array = [4, 5, 6, 3, 2, 1];
+        const array = [5, 4, 3, 2, 1];
         /* 
             冒泡排序
         */
         const bubbleSort = (array) => {
             const length = array.length;
-            for (let i = 0; i < length - 1; i++) {
-                for (let j = 0; j < length - i - 1; j++) {
+            for (let i = 0; i < length - 1; i++) { // 只需要length-1次循环就可以排序所有的元素
+                for (let j = 0; j < length - i - 1; j++) { // length-i-1排序好一个元素就减去一个(i)只需要对比length-i-1次
                     if (array[j] > array[j+1]) {
                         let temp = array[j];
                         array[j] = array[j+1];
@@ -24,27 +24,94 @@
             }
             return array;
         }
+        console.log(bubbleSort(array)); 
         /* 
             插入排序
         */
         const insertSort = (array) => {
             const length = array.length;
-            for (let i = 1; i < length; i++) {
-                let value = array[i];
-                let j = i - 1
-                // 查找插入的位置
-                for (; j >= 0; j--) {
-                    if (array[j] > value) {
-                        array[j+1] = array[j]; // 数据移动
-                    } else {
-                        break;
-                    }
+            // 从第二个元素开始，第一个元素已经排序
+            for (let i = 1; i < length; i++) { // 待排序的区间
+                let target = i; // 待排序元素的索引
+                // 查找插入位置，在已排序的元素序列中从后向前扫描                
+                for (let j = i - 1; j >= 0; j--) { // 已排序的区间&&待排序的元素与已排序区间的所有元素比较
+                    if (array[target] < array[j]) { // 如果待排序的元素比已排序的元素小则交换位置直至不小于已（稳定的）排序的一个元素
+                        [array[target], array[j]] = [array[j], array[target]];
+                        target = j;
+                    } 
                 }
-                array[j+1] = value; // 插入数据
             }
             return array;
         }
         console.log(insertSort(array)); 
+        /* 
+            选择排序
+        */
+        const selectSort = (array) => {
+            const length = array.length;
+            for (let i = 0; i < length-1; i++) { // 待排序的区间找出最小的元素
+                let minIndex = i; // 最小元素的索引
+                for (let j = i + 1; j < length; j++) { // 遍历待排序的区间
+                    if (array[j] < array[minIndex]) { // 比当前最小元素还小的元素，保存索引
+                        minIndex = j;
+                    }
+                }
+                [array[minIndex], array[i]] = [array[i], array[minIndex]]; // 交换数据
+            }
+            return array;
+        }
+        console.log(selectSort(array)); 
+        /* 
+            归并排序
+        */
+        const mergeSort = (array) => {
+            if (array.length < 2) {
+                return array;
+            }
+            const middle = Math.floor((array.length / 2));
+            const left = array.slice(0, middle);
+            const right = array.slice(middle);
+            return merge(mergeSort(left), mergeSort(right));
+
+            function merge(left, right) {
+                const temp = []; // 归并排序不是原地排序算法
+                if (left.length && right.length) {
+                    while (left[0] < right[0]) {
+                        temp.push(left.shift());
+                    }
+                } else {
+                    temp.push(left.shift());
+                }
+                while (left.length) {
+                    temp.push(left.shift());
+                }
+                while (right.length) {
+                    temp.push(right.shift());
+                }
+                return temp;
+            }
+        }
+        console.log(mergeSort(array));
+        /* 
+            快速排序
+        */
+        const quickSort = (array) => {
+            if (array.length < 2) {
+                return array;
+            }
+            const target = array[0];
+            const left = [];
+            const right = [];
+            for (let index = 1; index < array.length; index++) {
+                if (array[index] < target) {
+                    left.push(array[index]);
+                } else {
+                    right.push(array[index]);
+                }
+            }
+            return quickSort(left).concat([target], quickSort(right));
+        }
+        console.log(quickSort(array));
     </script>
 </body>
 </html>
