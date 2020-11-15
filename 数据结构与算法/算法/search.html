@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        const array = [1, 2, 3, 4, 5, 6, 7];
+        /* 
+            二分查找
+        */
+        const binarySearch = (data, array, start, end) => {
+            if (start > end) {
+                return -1;
+            }
+            const middle = Math.floor((start + end) / 2);
+            if (data === array[middle]) {
+                return middle;
+            } else if (data < array[middle]) {
+                return binarySearch(data, array, start, middle - 1);
+            } else {
+                return binarySearch(data, array, middle + 1, end);
+            }
+        }
+        console.log(binarySearch(3, array, 0, array.length - 1));
+    </script>
+</body>
+</html>
