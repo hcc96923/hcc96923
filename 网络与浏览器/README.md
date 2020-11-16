@@ -37,7 +37,7 @@
     - ![渲染进程Render](./f69dc1cf34924dfbab3c3f49b2a5f54c_tplv-k3u1fbpfcp-zoom-1.png)
     - 渲染进程和插件进程都运行在沙箱中
     - 页面的渲染，JS的执行，事件的循环，这些都是在渲染进程内执行
-    - GUI渲染线程
+    - GUI渲染线程（blink排版引擎）
       - 负责渲染浏览器揭秘那，解析HTML，CSS，构建DOM树和Render树，布局和绘制等等
     - JavaScript引擎线程（也被称为JS内核，V8）
       - JS引擎一直等待任务队列中任务的到来，然后加以处理，一个tab页面无论什么时候都只有一个JS线程在运行JS程序
