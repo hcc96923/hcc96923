@@ -8,6 +8,7 @@
 - 组件后缀可以使jsx也可以是js
 - props符合数据的单项流动使用者不能修改
 - 读state只能通过this.state
+- 状态是私有的，props是父组件传来的
 - react生命周期函数 
 - 属性传递：父传子——属性传递，字传父——onRef绑定要传递的事件子组件通过调用onRef从而调用父组件的事件
 - 事件传递：父传子——事件名传递，字传父——事件回传
@@ -17,6 +18,8 @@
 - react是单项数据流子组件不能修改只能使用
 - setState是同步的还是异步的？
 - setState只在合成事件（react在组件中注册绑定的事件）和钩子函数中是异步的，在原生事件和setTimeout中都是同步的
+- SyntheticEvent 是对浏览器原生事件的跨浏览器包装。它的 API 与浏览器的原生事件相同，包括 stopPropagation() 和 preventDefault()，除了事件在所有浏览器中的工作方式相同。
+- React Fiber 的主要目标是什么?React Fiber 的目标是提高其在动画、布局和手势等领域的适用性。它的主要特性是 incremental rendering: 将渲染任务拆分为小的任务块并将任务分配到多个帧上的能力。
 ### React-Router-DOM
 - Link和NavLink的区别。Link会被渲染为一个a标签，NavLink是Link的特定版本相比Link来说NavLink多了一些属性activeClassName，activeStyle
 - HashRouter：锚点链接  BorwserRouter：history模式需要后台支持
