@@ -34,16 +34,15 @@ class TodoList extends Component {
     render() { 
         return (  
             <>
-               <TodoListUI
+                <TodoListUI
                     input={this.state.input}
                     list={this.state.list}
                     changeInput={this.changeInput}
                     addItem={this.addItem}
-                    deleteItem={this.deleteItem}
-               ></TodoListUI>
+                    deleteItem={this.deleteItem}>
+                </TodoListUI>
             </>
         );
     }
-}
- 
+};
 export default TodoList;
