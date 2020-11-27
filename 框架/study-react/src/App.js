@@ -10,12 +10,7 @@ import Clock from './views/Clock/index';
 export default class App extends Component {
   constructor(props) {
     super(props)
-    this.state = {
-      number: 0
-    }
-  };
-  handleSetNumber = () => {
-    this.setState({ number: this.state.number+1 });
+    this.state = {};
   };
   render() {
     return (
@@ -27,8 +22,6 @@ export default class App extends Component {
             <li className="link"><Link to="/clock">Clock</Link></li>
             <li className="link"><Link to="/reacthooks">ReactHooks</Link></li>
           </ul>
-          <h1>{this.state.number}</h1>
-          <button onClick={this.handleSetNumber}>Add</button>
           <Switch>
             <Route path="/" exact>
               <List></List>
@@ -42,7 +35,7 @@ export default class App extends Component {
             </Route>
 
             <Route path="/clock">
-              <Clock number={this.state.number}></Clock>
+              <Clock></Clock>
             </Route>
 
             <Route path="/reacthooks">

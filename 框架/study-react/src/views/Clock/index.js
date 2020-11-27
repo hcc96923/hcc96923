@@ -1,42 +1,30 @@
 import React, { Component } from 'react';
 
+function Children(props) {
+    console.log(props);
+    return (
+        <>
+            <div>{props.left}</div>
+            <div>{props.center}</div>
+            <div>{props.right}</div>
+            <div>{props.children}</div>
+        </>
+    )
+};
 class Clock extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            sum: 0,
-            count: 0,
-            date: new Date()
-        };
-    };
-    tick() {
-        console.log(this.state.count);
-        console.log(this.props.number);
-        this.setState({
-            sum: this.state.count + this.props.number
-        });
-    };
-    // shouldComponentUpdate(nextProps, nextState) {
-    //     console.log(nextProps);
-    //     console.log(nextState);
-    //     return true;
-    // }
-    componentDidMount() {
-        const foos = () => ({
-            name: 'hcc'
-        })
-        console.log(foos());
-        console.log(this.props.number);
-        this.timerID = setInterval(() => this.tick(), 1000);
-    };
-    componentWillUnmount() {
-        clearInterval(this.timerID);
+        this.state = {};
     };
     render() { 
         return (  
             <>
-                <h1>{this.state.sum}</h1>
-                {this.state.date.toLocaleTimeString()}
+                <Children
+                    left={<h1>Left</h1>}
+                    center={<h1>Center</h1>}
+                    right={<h1>999</h1>}>
+                        999
+                </Children>
             </>
         );
     }
