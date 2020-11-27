@@ -6,6 +6,23 @@
 - 如果存在标签结构而且标签结构需要换行需要用()包起来
 - react事件绑定采用驼峰命名法
 - 组件后缀可以使jsx也可以是js
+- Babel 会把 JSX 转译成一个名为 React.createElement() 函数调用将JSX创建为一个对象
+  ```
+    <!-- react元素 -->
+    const element = (
+        <h1 className="greetings">
+            Hello World
+        </h1>
+    )
+    ------------------------React.createElement()--------------------------------
+    const element = {
+        type: 'h1',
+        props: {
+            className: 'greetings',
+            children: 'Hello World
+        }
+    }
+  ```
 - props符合数据的单项流动使用者不能修改
 - 读state只能通过this.state
 - 状态是私有的，props是父组件传来的

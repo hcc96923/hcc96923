@@ -13,6 +13,5 @@ class Person extends Component {
             </Fragment>
         );
     }
-}
-
+};
 export default Person;

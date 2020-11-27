@@ -6,5 +6,5 @@ import reducer from './reducer'; // 引入store管理员
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?  window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({}):compose;
 const enhancer = composeEnhancers(applyMiddleware(thunk));
 const store = createStore(reducer, enhancer) // 创建数据仓储
-   
+
 export default store;

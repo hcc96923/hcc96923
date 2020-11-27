@@ -9,5 +9,5 @@ class Redux extends Component {
         );
     }
 }
- 
+
 export default Redux;

@@ -2,12 +2,9 @@ import React, { Component, Fragment } from 'react';
 import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom';
 import Person from './views/person';
 import Detail from './components/article/detail';
-import Man from './views/man';
-import Woman from './views/woman';
 import Redux from './views/redux';
 import ReactHooks from './views/reacthooks';
 import NotFound from './components/NotFound';
-import './style/person.css';
 
 
 export default class App extends Component {
@@ -21,8 +18,6 @@ export default class App extends Component {
         <Router>
           <ul>
             <li className="link"><Link to="/">Person</Link></li>
-            <li className="link"><Link to="/man">Man</Link></li>
-            <li className="link"><Link to="/woman">Woman</Link></li>
             <li className="link"><Link to="/redux">Redux</Link></li>
             <li className="link"><Link to="/reacthooks">ReactHooks</Link></li>
           </ul>
@@ -32,14 +27,6 @@ export default class App extends Component {
             </Route>
 
             <Route path="/detail/:id" component={Detail}>
-            </Route>
-
-            <Route path="/man">
-              <Man></Man>
-            </Route>
-
-            <Route path="/woman">
-              <Woman></Woman>
             </Route>
 
             <Route path="/redux">
