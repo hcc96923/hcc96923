@@ -1,32 +1,24 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect, useContext, useReducer }from 'react';
 
-function Children(props) {
-    console.log(props);
-    return (
-        <>
-            <div>{props.left}</div>
-            <div>{props.center}</div>
-            <div>{props.right}</div>
-            <div>{props.children}</div>
-        </>
-    )
+
+const reducer = function(state, action) {
+  switch (action.type) {
+    case 'add':
+      return { count: state.count + 1};
+    case 'subtract':
+      return { count: state.count - 1};
+    default:
+      throw new Error();
+  }
+}
+function Example() {
+  const [state, dispatch] = useReducer(reducer, {count: 0});
+  return (
+    <>
+      <div>{state.count}</div>
+      <button onClick={() => dispatch({type: 'add'})}>Add</button>
+      <button onClick={() => dispatch({type: 'subtract'})}>Subtract</button>
+    </>
+  )
 };
-class Clock extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {};
-    };
-    render() { 
-        return (  
-            <>
-                <Children
-                    left={<h1>Left</h1>}
-                    center={<h1>Center</h1>}
-                    right={<h1>999</h1>}>
-                        999
-                </Children>
-            </>
-        );
-    }
-};
-export default Clock;
+export default Example;

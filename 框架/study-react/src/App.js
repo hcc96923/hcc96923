@@ -1,10 +1,10 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component, Fragment, Suspense } from 'react';
 import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom';
-import List from './views/Article/list';
-import Detail from './views/Article/detail';
-import TodoList from './views/Redux/TodoList';
-import ReactHooks from './views/reacthooks';
-import Clock from './views/Clock/index';
+const List = React.lazy(() => import('./views/Article/list'));
+const Detail = React.lazy(() => import('./views/Article/detail'));
+const TodoList = React.lazy(() => import('./views/Redux/TodoList'));
+const ReactHooks = React.lazy(() => import('./views/reacthooks'));
+const Clock = React.lazy(() => import('./views/Clock/index'));
 
 
 export default class App extends Component {
@@ -23,24 +23,26 @@ export default class App extends Component {
             <li className="link"><Link to="/reacthooks">ReactHooks</Link></li>
           </ul>
           <Switch>
-            <Route path="/" exact>
-              <List></List>
-            </Route>
+            <Suspense fallback={<div>Loading...</div>}>
+              <Route path="/" exact>
+                <List></List>
+              </Route>
 
-            <Route path="/detail/:id" component={Detail}>
-            </Route>
+              <Route path="/detail/:id" component={Detail}>
+              </Route>
 
-            <Route path="/redux">
-              <TodoList></TodoList>
-            </Route>
+              <Route path="/redux">
+                <TodoList></TodoList>
+              </Route>
 
-            <Route path="/clock">
-              <Clock></Clock>
-            </Route>
+              <Route path="/clock">
+                <Clock></Clock>
+              </Route>
 
-            <Route path="/reacthooks">
-              <ReactHooks></ReactHooks>
-            </Route>
+              <Route path="/reacthooks">
+                <ReactHooks></ReactHooks>
+              </Route>
+            </Suspense>
           </Switch>
         </Router>
       </Fragment>
