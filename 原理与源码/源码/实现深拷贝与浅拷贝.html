@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        function deepClone(object, hash = new WeakMap()) {
+            if (object instanceof RegExp) {
+                return new RegExp(object);
+            };
+            if (object instanceof Date) {
+                return new Date(object);
+            };
+            if (object === null || typeof object !== 'object') {
+                return object;
+            };
+            if (hash.has(object)) {// 解决循环应用的问题，已经存在这个对象直接返回
+                return object;
+            };
+            const result = new object.constructor();
+            hash.set(object, result);
+            for (const key in object) {
+                if (object.hasOwnProperty(key)) {
+                    result[key] = deepClone(object[key], hash);
+                };
+            };
+            return result;
+        };
+        const object = {
+            name: 'object',
+            hobby: {
+                music: true,
+                sing: function() {
+                    console.log('sing');
+                },
+                other: {
+                    age: 24,
+                }
+            }
+        };
+        console.log(deepClone(object));
+        function simpleClone(object) {
+            const result = {};
+            for (const key in object) {
+                result[key] = object[key];
+            };
+            return result;
+        };
+    </script>
+</body>
+</html>

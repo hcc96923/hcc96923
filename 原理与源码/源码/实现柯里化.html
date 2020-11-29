@@ -7,32 +7,21 @@
 </head>
 <body>
     <script>
-        // 柯里化就是把接受多个参数的函数变换成接受一个单一参数的函数，并且返回一个新函数，最后进行求值
-        function sum(a, b, c, d) {
-            return a + b + c + d;
-        }
-        // 柯里化函数
-        function curry(fn, ...args) {
-            console.log(args);
-            // 如果传递的参数还没有达到要执行的函数fn的个数就继续返回新的函数
-            // 并且返回curry函数传递剩下的参数
-            if (args.length < fn.length) {
-                return (...newArgs) => {
-                    console.log(newArgs);
-                    return curry(fn, ...args, ...newArgs);
-                }
+        // 柯里化，可以理解为提前接收部分参数，延迟执行，不立即输出结果，而是返回一个接受剩余参数的函数。
+        function currying(fn, ...args) {
+            if (fn.length > args.length) {
+                return (...newArgs) => currying(fn, ...args, ...newArgs);
             } else {
                 return fn(...args);
-            }
-        }
-
-        let add = curry(sum);
-        console.log(add);
-        // console.log(add(1, 2, 3, 4));
-        console.log(add(1)(2)(3)(4));
-        // console.log(add(1, 2, 3)(4));
-        // console.log(add(1, 2)(3, 4));
-        // console.log(add(1)(2, 3)(4));
+            };
+        };
+        function add(a, b, c) {
+            return a + b + c;
+        };
+        const curryAdd = currying(add);
+        console.log(curryAdd(1)(2)(3));
+        console.log(curryAdd(1, 2, 3));
+        console.log(curryAdd(1, 2)(3));
     </script>
 </body>
 </html>

@@ -7,23 +7,22 @@
 </head>
 <body>
     <script>
-        function inheritPrototype(subType, superType) {
+        // new Object();是基于Object的原型会继承Object的toString方法
+        function inheritPrototype(Father, Son) {
             // 创建对象，创建父类原型的一个副本
-            var prototype = Object.create(superType.prototype); 
+            let prototype = Object.create(Father.prototype); // 指定原型对象
             // 增强对象，弥补因重写原型而失去的默认的constructor 属性
-            prototype.constructor = subType; 
+            prototype.constructor = Son; // 指定构造函数
             // 指定对象，将新创建的对象赋值给子类的原型
-            subType.prototype = prototype; 
+            Son.prototype = prototype; 
         }
-        function Father(name) {
-            this.name = name;
-        }
-        function Son(age) {
-            this.age = age;
+        function Father() {
+        };
+        function Son() {
         }
         inheritPrototype(Father, Son);
-        let obj = new Son('hcc', 23);
-        console.log(obj.name, obj.age);
+        let obj = new Son();
+        console.log(obj);
     </script>
 </body>
 </html>

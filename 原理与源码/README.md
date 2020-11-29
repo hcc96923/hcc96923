@@ -226,3 +226,103 @@
     - payload部分声明了token的iss(签发者)，sub(所面向的用户)，exp(过期时间)和自定义的数据
     - signature部分为jwt的签名，主要为了让jwt不能随意篡改
     - ![JWT实现原理](./JWT实现原理.png)
+### 面试题
+- HTML5新特性
+  - 语义化标签header,nav,main,article,aside,footer,section还有新增的video,audio
+    - 用户体验，CSS样式丢失依然尽可能的呈现清晰的页面结构
+    - SEO搜索引擎优化
+    - 利于后面的开发和维护
+  - canvas,webgl，svg,,websocket,本地存储,地理定位，
+- CSS3新特性
+  - 动画，opacity，transiton，transform，旋转，缩放，移动
+  - border-radius，shadow
+  ```
+  transition: property duration timing-function delay;
+  // css属性名称   过渡时间  过渡时间曲线  过渡延迟时间
+  ```
+  ```
+  transform:rotate(30deg)  旋转
+  transform:translate(100px,20px)  移动
+  transform:scale(2,1.5);  缩放
+  transform:skew(30deg,10deg);  扭曲
+  ```
+  ```
+  animation: move 1s linear forwards;
+  // 动画的名称
+  // 定义动画的时间  duration 
+  // 动画的贝塞尔曲线
+  // animation-fill-mode 属性规定动画在播放之前或之后，其动画效果是否可见。 
+  // infinate  当动画完成后，保持最后一个属性值	
+  ```
+- 清除浮动
+  ```
+    clearfix:after {
+      content: "",
+      display: block,
+      clear: both
+    }
+    .clearfix {
+      *zoom: 1
+    }
+  ```
+  ```
+  父级元素overflow: hidden
+  ```
+
+- event.preventDefault()   // 阻止默认事件
+- event.stopPropagation() //阻止冒泡
+- BFC：是一个隔离的独立的容器，容器里面的子元素不受外面元素的影响
+  - 计算BFC高度时，浮动元素也参与计算
+  - 创建：根元素
+  - float不为none
+  - position为absolute或fixed
+  - overflow不为visible
+  - 内部元素会在垂直方向上一个接一个的放置
+  - box垂直方向的距离由margin决定，同一个BFC的两个margin会发生重叠
+  - 
+- 比如Symbol提出是为了解决什么问题？可以往全局变量冲突讲。
+
+- 比如BigInt，解决的问题是大数问题，超过了安全数，怎么办？
+- Demo.constructor.prototype
+- Demo.__proto__
+- Object.getPrototypeOf(Demo)
+
+- WWeakMap/WeakSet 和 Map/Set 的第一个不同点就是，WeakMap 的键必须是对象，不能是原始值。不能遍历。键名所指的对象，不计入垃圾回收机制。WeakMap 里面的键名对象和所对应的键值对会自动消失，不用手动删除引用。不会造成内存泄漏
+- Object.is()使用过吗？跟 === 和 == 区别
+- 两等号判等，会在比较时进行类型转换。
+- 使用 Object.is 来进行相等判断时，一般情况下和三等号的判断相同，它处理了一些特殊的情况，比如 -0 和 +0 不再相等，两个 NaN 认定为是相等的。
+- 反射型 XSS 攻击指的就是恶意脚本作为**「网络请求的一部分」**，随后网站又把恶意的JavaScript脚本返回给用户，当恶意 JavaScript 脚本在用户页面中被执行时，黑客就可以利用该脚本做一些恶意操作。
+- 窃取Cookie
+- 监听用户行为，比如输入账号密码后之间发给黑客服务器
+- 在网页中生成浮窗广告
+- 修改DOM伪造登入表单
+### hash与history
+- 即地址栏URL中的#符号，它的特点在于：hash 虽然出现URL中，但不会被包含在HTTP请求中，对后端完全没有影响，不需要后台进行配置，因此改变hash不会重新加载页面。
+- 利用了HTML5 History Interface 中新增的pushState() 和replaceState() 方法（需要特定浏览器支持）。history模式改变了路由地址，因为需要后台配置地址。
+- Jsonp 就是利用script标签跨域特性进行请求。
+- 当解析到link时，页面会同步加载所引的 css，而@import所引用的 css 会等到页面加载完才被加载；
+- Proxy与Object.defineProperty()的对比
+  - Proxy
+    - 可以直接监听对象而非属性,并返回一个新对象
+    - 可以直接监听数值的变化
+    - 可以劫持整个对象，并返回一个新对象
+  - Object.defineProperty()
+    - 只能劫持对象的属性，我们需要对每个对象的每个属性进行遍历，无法监控到数组下标的变化，导致直接通过数组的下标给数组设置值，不能实时响应
+- 既然vue不能检测以下标形式来操作数组属性值/长度的变动，但是提供vm.$set的API来供我们使用。
+- FastClick 是 FT Labs 专门为解决移动端浏览器 300 毫秒点击延迟问题所开发的一个轻量级的库。
+- Vue开启一个异步队列，并缓冲在此事件循环中发生的所有数据变化。
+- Vue3.0新特性
+  - 双向响应原理由Object.defineProperty改为基于ES6的Proxy，使其颗粒度更大，速度更快
+  - 重写了 Vdom ，突破了 Vdom 的性能瓶颈
+  - 进行了模板编译的优化
+  - Tree-Shaking 的支持。修剪树叶一样把不需要的东西给修剪掉，使 Vue3 的体积更小。
+  - composition-api 是一个 Vue3 中新增的功能，它的灵感来自于 React Hooks ，是比 mixin 更强大的存在。
+  - Reactivity 模块独立开来，意味着 Vue3.0 的响应式模块可以与其他框架相组合。
+  - 如上图，composition-api 把复杂组件的逻辑抽地更紧凑，而且可以将公共逻辑进行抽取。
+  - Fragments不再限制 template 只有一个根节点。render函数也可以返回数组了，有点像 React.Fragments
+  - Better TypeScript Support更好的类型推导，使得 Vue3 把 TypeScript 支持得非常好
+  - 在Vue3中，定义 data，methods、watch、computed、数据 等都放在了 setup() 函数中
+- nextTick dom更新是异步的过程，原因是为了提高性能避免多次修改dom，所以把多个dom操作合并成一个操作，使用nexttick则是在dom更新后的回调，此时可以获取到对应dom更新后的结果
+- diff只会比较同一层级的节点
+- 如果两个节点都是一样的则比较子节点，如果两个节点不一样则直接用Vnode替换oldNode。即使子节点一样
+- 不同父节点的相同子节点不能复用

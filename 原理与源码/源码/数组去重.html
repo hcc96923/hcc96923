@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        const array = [7, 5, 7, 4, 1, 4];
+        /* 
+            Set
+        */
+        const result = [...new Set(array)];
+        // console.log(Array.isArray(result));
+        // console.log(Object.prototype.toString.call(result));
+
+        /* 
+            对象特性&filter
+        */
+        const unique = array => {
+            const object = {};
+            return array.filter(element => {
+                return object.hasOwnProperty(typeof element + element) ? false : (object[typeof element + element] = true);
+            });
+        }
+        // console.log(unique(array));
+        const flat = [1, 2, 3, [4, 5, [6]]];
+        const flatArrasy = array => {
+            return array.reduce((result, element) => { 
+                if (Object.prototype.toString.call(element).slice(8,-1) === 'Array') {
+                    return [...result, ...flatArray(element)]; // 元素数组递归抹平数组
+                } else {
+                    return [...result, element]; // 普通元素直接合并
+                };
+            }, []);
+        };
+        
+        const flatArray = array => {
+            return array.reduce((result, element) => {
+                if (Object.prototype.toString.call(element) === '[object Array]') {
+                    return [...result, ...flatArray(element)]
+                } else {
+                    return [...result, element];
+                }
+            }, []);
+        }
+        console.log(flatArray(flat));
+    </script>
+</body>
+</html>

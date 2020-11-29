@@ -4,52 +4,62 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        #box {
+            color: #000;
+            width: 100vw;
+            height: 100vh;
+            line-height: 100vh;
+            text-align: center;
+            font-size: 30px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+        }
+    </style>
 </head>
 <body>
-    <input type="text" value="" id="input">
-    <input type="text" value="" id="inputs">
-    <input type="text" value="" id="inputss">
+    <div id="box"></div>
     <script>
-        // 函数防抖(debounce)：在事件被触发的n秒后再执行回调，如果在这n秒内又被触发，则重新计时
-        // 函数防抖就是游戏角色用法术攻击，发动技能的时候要读条，技能读条没完再按技能就会重新读条
-        function ajax () {
-            console.log('ajax request' + new Date().toLocaleTimeString());
-        }
-        // search搜索来你想，用户在不断输入值时，用防抖来节约请求资源
-        // window触发resize的时候，不断调整浏览器窗口大小会不断出发这个事件，用防抖来让其只触发一次
+        var count = 0;
+        var dom = document.getElementById('box');
+        function Count() {
+            dom.innerHTML = count++;
+        };
         function debounce(fn, delay) {
-            return function (args) {
-                clearTimeout(fn.id);
-
+            return function() {
+                fn.id && clearTimeout(fn.id);
                 fn.id = setTimeout(() => {
-                    fn.call(args);
+                    fn.call(this, arguments);
                 }, delay);
-            }
-        }
-        // 函数节流((throttle)：规定在一个单位时间内，只能触发一次函数。如果这个单位时间内触发了多次函数，只有一次生效
-        // 函数节流就是游戏的射速，就算一直按着鼠标射击，也只会在规定射速内射出子弹
-
-        // 鼠标不断点击触发，mousedown（单位时间内只触发一次）
-        // 监听滚动事件，是否滑到底部自动加载更多
+            };
+        };
         function throttle(fn, delay) {
-            let canRun = true;
-            return function () {
-                if (!canRun) return;
-                canRun = false;
-                setTimeout(() => {
-                    fn.apply(this, arguments);
-                    canRun = true;
-                }, delay);
-            }
-        }
-        document.getElementById('input').addEventListener('keyup',()=> {
-            ajax ()
-        });
-        document.getElementById('inputs').addEventListener('keyup',()=> {
-            debounce(ajax, 1000)();
-        });
-        document.getElementById('inputss').addEventListener('keyup',()=> {
-            throttle(ajax, 1000)();
+            let open = false;
+            return function() {
+                if (!open) {
+                    open = true;
+                    setTimeout(() => {
+                        fn.call(this, arguments);
+                        open = false;
+                    }, delay);
+                };
+            };
+        };
+        // function throttle(fn, delay) {
+        //     let previouse = 0;
+        //     return function() {
+        //         let now = Date.now();
+        //         if (now - previouse > delay) {
+        //             fn.call(this, arguments);
+        //             previouse = now;
+        //         };
+        //     };
+        // };
+        // dom.addEventListener('mousemove', () => {
+        //     debounce(Count, 1000)();
+        // });
+        dom.addEventListener('mousemove', () => {
+            throttle(Count, 1000)();
         });
     </script>
 </body>
