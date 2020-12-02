@@ -126,4 +126,6 @@
 - useContext用于接收上下文变量（由createContext创建通过Provider提供给子组件）
 - reducer是什么？reducer其实就是一个函数这个函数有两个参数，一个是状态，一个是用来控制业务逻辑的判断参数
 - useMemo代替shouldComponentUpdate
+- shouldComponentUpdate如果当前组件的state或者props变化了则重新渲染即使子组件的props没有改变
+- shouldComponentUpdate方法接收两个参数nextProps和nextState，可以将this.props与nextProps以及this.state与nextState进行比较，并返回 false 以告知 React 可以跳过更新。
 ### Next
