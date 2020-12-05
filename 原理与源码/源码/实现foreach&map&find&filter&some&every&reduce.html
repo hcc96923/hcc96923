@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        const array = [14, 16, 30, 40, 51, 49];
+        Array.prototype.myIsArray = array => Object.prototype.toString.call(array) === '[object Array]';
+        Array.prototype.myForEach = function (callback) {
+            const isArray = Object.prototype.toString.call(this) === '[object Array]';
+            if (!isArray) {
+                throw new TypeError(this + '.' + 'myForEach is not a function');
+            };
+            for (let index = 0; index < this.length; index++) {
+                callback(this[index], index, this);
+            };
+        };
+        // array.myForEach((item, index, array) => {
+        //     console.log(item, index, array);
+        // });
+        Array.prototype.myMap = function(callback) {
+            const isArray = Object.prototype.toString.call(this) === '[object Array]';
+            if (!isArray) {
+                throw new TypeError(this + '.' + 'myMap is not a function');
+            };
+            const newArray = [];
+            for (let index = 0; index < this.length; index++) {
+                newArray.push(callback(this[index], index, this));
+            };
+            return newArray;
+        };
+        // const newArray = array.myMap((item, index, array) => {
+        //     return item * 2;
+        // });
+        // console.log(newArray);
+        Array.prototype.myFind = function (callback) {
+            const isArray = Object.prototype.toString.call(this) === '[object Array]';
+            if (!isArray) {
+                throw new TypeError(this + '.' + 'myFind is not a function');
+            };
+            for (let index = 0; index < this.length; index++) {
+                if (callback(this[index], index, this)) {
+                    return this[index];
+                };
+            };
+        };
+        // const result = array.myFind((item, index, array) => {
+        //     return item === 30;
+        // });
+        // console.log(result);
+        Array.prototype.myFilter = function (callback) {
+            const isArray = Object.prototype.toString.call(this) === '[object Array]';
+            if (!isArray) {
+                throw new TypeError(this + '.' + 'myFilter is not a function');
+            };
+            const newArray = [];
+            for (let index = 0; index < this.length; index++) {
+                if (callback(this[index], index, this)) {
+                    newArray.push(this[index]);
+                };
+            };
+            return newArray;
+        };
+        // const newArray = array.myFilter((item, index, array) => {
+        //     return item > 24;
+        // });
+        // console.log(newArray);
+        Array.prototype.mySome = function (callback) {
+            const isArray = Object.prototype.toString.call(this) === '[object Array]';
+            if (!isArray) {
+                throw new TypeError(this + '.' + 'mySome is not a function');
+            };
+            for (let index = 0; index < this.length; index++) {
+                if (callback(this[index], index, this)) {
+                    return true;
+                };
+            };
+            return false;
+        };
+        // const result = array.mySome((item, index, array) => {
+        //     return item === 30;
+        // });
+        // console.log(result);
+        Array.prototype.myEvery = function (callback) {
+            const isArray = Object.prototype.toString.call(this) === '[object Array]';
+            if (!isArray) {
+                throw new TypeError(this + '.' + 'myEvery is not a function');
+            };
+            for (let index = 0; index < this.length; index++) {
+                if (!callback(this[index], index, this)) {
+                    return false;
+                };
+            };
+            return true;
+        };
+        // const result = array.myEvery((item, index, array) => {
+        //     return typeof item === 'number';
+        // });
+        // console.log(result);
+        Array.prototype.myReduce = function (callback, initValue) {
+            const isArray = Object.prototype.toString.call(this) === '[object Array]';
+            if (!isArray) {
+                throw new TypeError(this + '.' + 'myReduce is not a function');
+            };
+            for (let index = 0; index < this.length; index++) {
+                if (typeof initValue === 'undefined') {
+                    initValue = this[index];
+                } else {
+                    initValue = callback(initValue, this[index], index, this);
+                };
+            };
+            return initValue;
+        };
+        const result = array.myReduce((sum, currentValue, index, array) => {
+            sum += currentValue;
+            return sum;
+        }, 0);
+        console.log(result);
+    </script>
+</body>
+</html>
