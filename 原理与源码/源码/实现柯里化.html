@@ -7,21 +7,19 @@
 </head>
 <body>
     <script>
-        // 柯里化，可以理解为提前接收部分参数，延迟执行，不立即输出结果，而是返回一个接受剩余参数的函数。
         function currying(fn, ...args) {
             if (fn.length > args.length) {
                 return (...newArgs) => currying(fn, ...args, ...newArgs);
             } else {
                 return fn(...args);
-            };
+            }
         };
         function add(a, b, c) {
             return a + b + c;
         };
-        const curryAdd = currying(add);
-        console.log(curryAdd(1)(2)(3));
-        console.log(curryAdd(1, 2, 3));
-        console.log(curryAdd(1, 2)(3));
+        // console.log(currying(add)(1)(2)(3));
+        // console.log(currying(add)(1, 2, 3));
+        console.log(currying(add)(1, 2)(3));
     </script>
 </body>
 </html>

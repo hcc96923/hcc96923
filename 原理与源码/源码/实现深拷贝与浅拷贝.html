@@ -9,15 +9,15 @@
     <script>
         function deepClone(object, hash = new WeakMap()) {
             if (object instanceof RegExp) {
-                return new RegExp(object);
+                return RegExp(object);
             };
             if (object instanceof Date) {
-                return new Date(object);
+                return Date(object);
             };
             if (object === null || typeof object !== 'object') {
                 return object;
             };
-            if (hash.has(object)) {// 解决循环应用的问题，已经存在这个对象直接返回
+            if (hash.has(object)) {
                 return object;
             };
             const result = new object.constructor();
@@ -26,6 +26,13 @@
                 if (object.hasOwnProperty(key)) {
                     result[key] = deepClone(object[key], hash);
                 };
+            };
+            return result;
+        }
+        function shallowClone(object) {
+            const result = {};
+            for (const key in object) {
+                result[key] = object[key];
             };
             return result;
         };
@@ -42,13 +49,7 @@
             }
         };
         console.log(deepClone(object));
-        function simpleClone(object) {
-            const result = {};
-            for (const key in object) {
-                result[key] = object[key];
-            };
-            return result;
-        };
+        console.log(shallowClone(object));
     </script>
 </body>
 </html>

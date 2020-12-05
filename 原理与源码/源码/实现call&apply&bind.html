@@ -7,22 +7,17 @@
 </head>
 <body>
     <script>
-        /* 
-            call
-        */
-        Function.prototype.myCall = function(context, ...args) {
-            context = Object(context) || window; // 将基本类型转换为Object || window
-            const fn = Symbol('fn'); // 以免覆盖context上的属性
-            context[fn] = this; // 获取this
-            const result = context[fn](...args); // 执行函数
-            delete context[fn];
-            return result; // 返回结果
+        function Test(...args) {
+            console.log(args);
         };
-        const array = [999];
-        // console.log(Object.prototype.toString.myCall(array, 1, 2, 3));
-        /* 
-            apply
-        */
+        Function.prototype.myCall = function (context, ...args) {
+            context = Object(context) || window;
+            const fn = Symbol('fn');
+            context[fn] = this;
+            const result = context[fn](...args);
+            delete context[fn];
+            return result;
+        };
         Function.prototype.myApply = function(context, args) {
             context = Object(context) || window;
             const fn = Symbol('fn');
@@ -31,26 +26,14 @@
             delete context[fn];
             return result;
         };
-        // console.log(Object.prototype.toString.myApply(array, [1, 2, 3]));
-        // bind和call传递参数的方式一样，接收都需要展开
-        /* 
-            bind
-        */
-        Function.prototype.myBind = function(context, ...args) {
+        Function.prototype.myBind = function (context, ...args) {
             return (...newArgs) => {
                 return this.call(context, ...args, ...newArgs);
             };
         };
-        this.name = 'HCC';
-        const object = {
-            name: 'hcc', 
-            get: function() {
-                console.log(arguments);
-                console.log(this.name);
-            }
-        };
-        const result = object.get.myBind(this, [1, 2, 3])(666);
-        console.log(result);
+        Test.myCall(window, 1, 2, 3);
+        Test.myApply(window, [1, 2, 3]);
+        Test.myBind(window, 1, 2, 3)(4, 5, 6);
     </script>
 </body>
 </html>
