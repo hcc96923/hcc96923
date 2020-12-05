@@ -45,19 +45,19 @@
                 };
             };
         };
-        // function throttle(fn, delay) {
-        //     let previouse = 0;
-        //     return function() {
-        //         let now = Date.now();
-        //         if (now - previouse > delay) {
-        //             fn.call(this, arguments);
-        //             previouse = now;
-        //         };
-        //     };
-        // };
-        // dom.addEventListener('mousemove', () => {
-        //     debounce(Count, 1000)();
-        // });
+        function throttle(fn, delay) {
+            let previouse = 0;
+            return function() {
+                let now = Date.now();
+                if (now - previouse > delay) {
+                    fn.call(this, arguments);
+                    previouse = now;
+                };
+            };
+        };
+        dom.addEventListener('mousemove', () => {
+            debounce(Count, 1000)();
+        });
         dom.addEventListener('mousemove', () => {
             throttle(Count, 1000)();
         });

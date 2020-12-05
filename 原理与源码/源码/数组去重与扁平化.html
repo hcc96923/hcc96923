@@ -9,25 +9,25 @@
 <body>
     <script>
         const array = [7, 5, 7, 4, 1, 4];
-        console.log([...new Set(array)]);
-        const unqiueArray = array => {
-            const object = {};
+        function uniqueArray(array) {
+            const result = {};
             return array.filter(element => {
-                return object.hasOwnProperty(typeof element + element) ? false : (object[typeof element + element] = true);
+                return result.hasOwnProperty(typeof element + element) ? false : (result[typeof element + element] = true);
             });
         };
-        console.log(unqiueArray(array));
+        console.log([...new Set(array)]);
+        console.log(uniqueArray(array));
         const moreArray = [1, [2, 3, [4, 5, 6]]];
-        const faltArray = array => {
+        function flatArray(array) {
             return array.reduce((result, element) => {
                 if (Object.prototype.toString.call(element) === '[object Array]') {
-                    return [...result, ...faltArray(element)];
+                    return [...result, ...flatArray(element)];
                 } else {
                     return [...result, element];
-                };
+                }
             }, []);
         };
-        console.log(faltArray(moreArray));
+        console.log(flatArray(moreArray));
     </script>
 </body>
 </html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        let p1 = new Promise((resolve, reject) => { 
+            setTimeout(resolve, 1000, 'one'); 
+        }); 
+        let p2 = new Promise((resolve, reject) => { 
+            setTimeout(resolve, 2000, 'two'); 
+        });
+        let p3 = new Promise((resolve, reject) => {
+            setTimeout(resolve, 3000, 'three');
+        });
+        let p4 = new Promise((resolve, reject) => {
+            setTimeout(resolve, 4000, 'four');
+        });
+        let p5= Promise.resolve(100);
+        let p6 = 999;
+        // let p7 = new Promise((resolve, reject) => {
+        //     reject('抛出第一个错误');
+        // });
+
+        Promise.prototype.all = function(promiseArray) {
+            return new Promise((resolve, reject) => {
+                const workArray = [];
+                let count = 0;
+                for (let index = 0; index < promiseArray.length; index++) {
+                    promiseArray[index]
+                        .then(work => {
+                            workArray[index] = work;
+                            count++;
+                            if (count === promiseArray.length) {
+                                resolve(workArray);
+                            }
+                        })
+                        .catch(error => {
+                            reject(error);
+                        });
+                };
+            });
+        };
+        Promise.all([p1, p2, p3, p4, p5, p6]).then(result => {
+            console.log(result);
+        });
+
+        Promise.prototype.race = function(promiseArray) {
+            return new Promise((resolve, reject) => {
+                promiseArray.forEach(work => {
+                    Promise.resolve(work)
+                            .then(work => resolve(work))
+                            .catch(error => reject(error));
+                });
+            });
+        };
+        Promise.race([p1, p2, p3, p4, p5, p6]).then(result => {
+            console.log(result);
+        });
+    </script>
+</body>
+</html>
