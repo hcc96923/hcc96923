@@ -8,23 +8,19 @@
 </head>
 <body>
     <script>
-        function Person(name) {
-            this.name = name;
+        function inheritPrototype(Animal, Dog) {
+            const prototype = Object.create(Animal.prototype);
+            prototype.constructor = Dog;
+            Dog.prototype = prototype;
         };
-        function myInstanceOf(left, right) {
-            let prototype = Object.getPrototypeOf(left);
-            while (left) {
-                if (prototype === null) {
-                    return false;
-                };
-                if (prototype === right.prototype) {
-                    return true;
-                };
-                prototype = Object.getPrototypeOf(prototype);
-            };
+        function Animal() {};
+        function Dog() {};
+        Animal.prototype.Say = function() {
+            console.log('汪汪汪');
         };
-        const person = new Person();
-        console.log(myInstanceOf(person, Array));
+        inheritPrototype(Animal, Dog);
+        const dog = new Dog();
+        console.log(dog);
         function myNew(fn, ...args) {
             const instance = Object.create(fn.prototype);
             const result = fn.apply(instance, args);

@@ -7,7 +7,19 @@
 </head>
 <body>
     <script>
-        function deepClone(object, hash = new WeakMap()) {
+        const object = {
+            name: 'hcc',
+            other: {
+                age: 24,
+                other: {
+                    gender: 'male',
+                    other: {
+                        date: new Date()
+                    }
+                }
+            }
+        };
+        function deepCopy(object, hash = new WeakMap()) {
             if (object instanceof RegExp) {
                 return RegExp(object);
             };
@@ -24,32 +36,20 @@
             hash.set(object, result);
             for (const key in object) {
                 if (object.hasOwnProperty(key)) {
-                    result[key] = deepClone(object[key], hash);
+                    result[key] = deepCopy(object[key], hash);
                 };
             };
             return result;
-        }
-        function shallowClone(object) {
+        };
+        function shallowCopy(object) {
             const result = {};
             for (const key in object) {
                 result[key] = object[key];
             };
             return result;
         };
-        const object = {
-            name: 'object',
-            hobby: {
-                music: true,
-                sing: function() {
-                    console.log('sing');
-                },
-                other: {
-                    age: 24,
-                }
-            }
-        };
-        console.log(deepClone(object));
-        console.log(shallowClone(object));
+        console.log(deepCopy(object));
+        console.log(shallowCopy(object));
     </script>
 </body>
 </html>
