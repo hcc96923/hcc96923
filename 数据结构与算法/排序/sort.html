@@ -13,51 +13,56 @@
         */
         const bubbleSort = (array) => {
             const length = array.length;
-            for (let i = 0; i < length - 1; i++) { // 只需要length-1次循环就可以排序所有的元素
-                for (let j = 0; j < length - i - 1; j++) { // length-i-1排序好一个元素就减去一个(i)只需要对比length-i-1次
+            for (let i = 0; i < length; i++) { // 循环的元素
+                let flag = false;
+                for (let j = 0; j < length - i - 1; j++) { // 交换的次数
                     if (array[j] > array[j+1]) {
-                        let temp = array[j];
-                        array[j] = array[j+1];
-                        array[j+1] = temp;
-                    }
-                }
-            }
+                        [array[j], array[j+1]] = [array[j+1], array[j]];
+                        flag = true;
+                    };
+                };
+                if (!flag) {
+                    return array;
+                };
+            };
             return array;
-        }
+        };
         console.log(bubbleSort(array)); 
         /* 
             插入排序
         */
         const insertSort = (array) => {
             const length = array.length;
-            // 从第二个元素开始，第一个元素已经排序
+            let current;
             for (let i = 1; i < length; i++) { // 待排序的区间
-                let target = i; // 待排序元素的索引
-                // 查找插入位置，在已排序的元素序列中从后向前扫描                
-                for (let j = i - 1; j >= 0; j--) { // 已排序的区间&&待排序的元素与已排序区间的所有元素比较
-                    if (array[target] < array[j]) { // 如果待排序的元素比已排序的元素小则交换位置直至不小于已（稳定的）排序的一个元素
-                        [array[target], array[j]] = [array[j], array[target]];
-                        target = j;
-                    } 
-                }
-            }
+                let j = i; // j用于帮助current寻找自己应有的定位
+                current = array[i];
+                while (j > 0 && array[j-1] > current) {
+                    array[j] = array[j-1];
+                    j--;
+                };       
+                array[j] = current;
+            };
             return array;
-        }
+        };
         console.log(insertSort(array)); 
         /* 
             选择排序
         */
         const selectSort = (array) => {
             const length = array.length;
+            let minIndex;
             for (let i = 0; i < length-1; i++) { // 待排序的区间找出最小的元素
-                let minIndex = i; // 最小元素的索引
+                minIndex = i; // 最小元素的索引
                 for (let j = i + 1; j < length; j++) { // 遍历待排序的区间
                     if (array[j] < array[minIndex]) { // 比当前最小元素还小的元素，保存索引
                         minIndex = j;
-                    }
-                }
-                [array[minIndex], array[i]] = [array[i], array[minIndex]]; // 交换数据
-            }
+                    };
+                };
+                if (minIndex !== i) {
+                    [array[minIndex], array[i]] = [array[i], array[minIndex]]; // 交换数据
+                };
+            };
             return array;
         }
         console.log(selectSort(array)); 
@@ -95,10 +100,8 @@
         /* 
             快速排序
         */
-        const quickSort = (array) => {
-            if (array.length < 2) {
-                return array;
-            }
+        const quickSort = array => {
+            if(array.length < 2) return array;
             const target = array[0];
             const left = [];
             const right = [];
@@ -107,8 +110,8 @@
                     left.push(array[index]);
                 } else {
                     right.push(array[index]);
-                }
-            }
+                };
+            };
             return quickSort(left).concat([target], quickSort(right));
         }
         console.log(quickSort(array));

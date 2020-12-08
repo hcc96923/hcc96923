@@ -7,7 +7,36 @@
 </head>
 <body>
     <script>
-        
+        /**
+        * @param {number[]} nums
+        * @param {number} k
+        * @return {number[]}
+        */
+        var maxSlidingWindow = function(nums, k) {
+            let length = nums.length;
+            let left = 0;
+            let right = k - 1;
+            let result = new Array();
+            while(right < length) {
+                let max = findMax(nums, left, right);
+                result.push(max);
+                left++;
+                right++;
+            };
+            return result.filter(item => item);
+        };
+        function findMax(array, left, right) {
+            if(!array || !array.length) return;
+            let max = array[left];
+            for(let index = left; index <= right; index++) {
+                if(array[index] > max) {
+                    max = array[index];
+                };
+            };
+            return max;
+        };
+        const nums = [];
+        console.log(maxSlidingWindow(nums, 0));
     </script>
 </body>
 </html>
