@@ -31,17 +31,17 @@
                 let count = 0;
                 for (let index = 0; index < promiseArray.length; index++) {
                     promiseArray[index]
-                        .then(work => {
-                            workArray[index] = work;
-                            count++;
-                            if (count === promiseArray.length) {
-                                resolve(workArray);
-                            }
-                        })
-                        .catch(error => {
-                            reject(error);
-                        });
-                };
+                    .then(work => {
+                        workArray[index] = work;
+                        count++;
+                        if (promiseArray.length === count) {
+                            resolve(workArray);
+                        };
+                    })
+                    .catch(error => {
+                        reject(error);
+                    });
+                }
             });
         };
         Promise.all([p1, p2, p3, p4, p5, p6]).then(result => {

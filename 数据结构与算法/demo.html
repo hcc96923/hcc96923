@@ -1,42 +1,92 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>算法练习</title>
+    <title>Document</title>
+    
 </head>
 <body>
     <script>
-        /**
-        * @param {number[]} nums
-        * @param {number} k
-        * @return {number[]}
-        */
-        var maxSlidingWindow = function(nums, k) {
-            let length = nums.length;
-            let left = 0;
-            let right = k - 1;
-            let result = new Array();
-            while(right < length) {
-                let max = findMax(nums, left, right);
-                result.push(max);
-                left++;
-                right++;
-            };
-            return result.filter(item => item);
+        function ListNode(val) {
+            this.val = val;
+            this.next = null;
         };
-        function findMax(array, left, right) {
-            if(!array || !array.length) return;
-            let max = array[left];
-            for(let index = left; index <= right; index++) {
-                if(array[index] > max) {
-                    max = array[index];
+        const node1 = new ListNode(1);
+        const node2 = new ListNode(2);
+        const node3 = new ListNode(3);
+        node1.next = node2;
+        node2.next = node3;
+        console.log(node1);
+        function TreeNode(val) {
+            this.val = val;
+            this.left = this.right = null;
+        }
+        const root = {
+            val: 'A',
+            left: {
+                val: 'B',
+                left: {
+                    val: 'D'
+                },
+                right: {
+                    val: 'E'
+                }
+            },
+            right: {
+                val: 'C',
+                right: {
+                    val: 'F'
+                }
+            }
+        }
+        function beforeOrder(root) {
+            if (!root) {
+                return root;
+            };
+            console.log('当前遍历的节点的值为：', root.val);
+            beforeOrder(root.left);
+            beforeOrder(root.right);
+        };
+        function centerOrder(root) {
+            if (!root) {
+                return root;
+            };
+            centerOrder(root.left);
+            console.log('当前遍历的节点的值为：', root.val);
+            centerOrder(root.right);
+        };
+        function afterOrder(root) {
+            if (!root) {
+                return root;
+            };
+            afterOrder(root.left);
+            afterOrder(root.right);
+            console.log('当前遍历的节点的值为：', root.val);
+        }
+        // beforeOrder(root);
+        // centerOrder(root);
+        // afterOrder(root);
+        function layerOrder(root) {
+            if (!root) {
+                return root;
+            };
+            const queue = [];
+            queue.push(root);
+            while (queue.length) {
+                const top = queue[0];
+                console.log(top.val);
+                if (top.left) {
+                    queue.push(top.left);
                 };
+                if (top.right) {
+                    queue.push(top.right);
+                };
+                queue.shift();
             };
-            return max;
         };
-        const nums = [];
-        console.log(maxSlidingWindow(nums, 0));
+        layerOrder(root);
     </script>
 </body>
 </html>
