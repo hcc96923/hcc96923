@@ -5,22 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    
 </head>
 <body>
     <script>
-        function inheritPrototype(Animal, Dog) {
-            const prototype = Object.create(Animal.prototype);
-            prototype.constructor = Dog;
-            Dog.prototype = prototype;
-        };
-        function Animal() {};
-        function Dog() {};
-        Animal.prototype.Say = function() {
-            console.log('汪汪汪');
-        };
-        inheritPrototype(Animal, Dog);
-        const dog = new Dog();
-        console.log(dog);
         function myNew(fn, ...args) {
             const instance = Object.create(fn.prototype);
             const result = fn.apply(instance, args);
@@ -37,6 +25,17 @@
         const demo = { name: 'hcc' };
         console.log(myCreate(demo));
         console.log(Object.create(demo));
+
+        
+        function Add() {}
+        var add = new Add();
+        console.log(add);
+        console.log(Add.constructor);
+        console.log(Add.prototype);
+        console.log(add.__proto__);
+        console.log(add.constructor);
+        // 原型对象有连个属性constructor和__proto__
+        // 对象有一个属性__proto__
     </script>
 </body>
 </html>
