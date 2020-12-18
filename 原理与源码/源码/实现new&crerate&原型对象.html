@@ -9,8 +9,11 @@
 <body>
     <script>
         function myNew(fn, ...args) {
+            // obj.__proto__ = Foo.prototype
             const instance = Object.create(fn.prototype);
+            // 这一步是为了让构造方法能进行this.name = name之类的操作
             const result = fn.apply(instance, args);
+            // 一般情况下，构造方法不会返回新实例，但使用者可以选择返回新实例来覆盖new创建的对象
             return typeof result === 'object' ? result : instance;
         };
         const arr = new Array();

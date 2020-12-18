@@ -408,3 +408,5 @@ console.log(a == 1 && a == 2);//true
 - setState集齐一批待更新的数据后，一次更新完，减少频繁更新带来的性能上的消耗
 - 受控组件，表单元素的修改会实时映射到状态值上，此时就可以对输入的内容进行校验
 - Portal 提供了一种很好的将子节点渲染到父组件以外的 DOM 节点的方式。ReactDOM.createPortal(child, container)
+- 在react中使用常量用static字段
+- class MyComponent extends React.Component { static DEFAULT_PAGINATION = 10 }
