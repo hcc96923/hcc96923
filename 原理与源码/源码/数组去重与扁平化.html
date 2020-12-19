@@ -15,8 +15,14 @@
                 return result.hasOwnProperty(typeof element + element) ? false : (result[typeof element + element] = true);
             });
         };
+        function uniqueArrays(array) {
+            return array.filter((item, index, array) => {
+                return array.indexOf(item) === index;
+            });
+        };
         console.log([...new Set(array)]);
         console.log(uniqueArray(array));
+        console.log(uniqueArrays(array));
         const moreArray = [1, [2, 3, [4, 5, 6]]];
         function flatArray(array) {
             return array.reduce((result, element) => {
