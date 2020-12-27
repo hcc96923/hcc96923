@@ -47,19 +47,6 @@
         Promise.all([p1, p2, p3, p4, p5, p6]).then(result => {
             console.log(result);
         });
-
-        Promise.prototype.race = function(promiseArray) {
-            return new Promise((resolve, reject) => {
-                promiseArray.forEach(work => {
-                    Promise.resolve(work)
-                            .then(work => resolve(work))
-                            .catch(error => reject(error));
-                });
-            });
-        };
-        Promise.race([p1, p2, p3, p4, p5, p6]).then(result => {
-            console.log(result);
-        });
     </script>
 </body>
 </html>
