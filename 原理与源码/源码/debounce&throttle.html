@@ -50,16 +50,18 @@
             return function() {
                 let now = Date.now();
                 if (now - previouse > delay) {
-                    fn.call(this, arguments);
+                    fn.apply(this, arguments);
+                    console.log(111);
+                    console.log(arguments);
                     previouse = now;
                 };
             };
         };
         dom.addEventListener('mousemove', () => {
-            debounce(Count, 1000)();
+            debounce(Count, 1000)(1, 2, 3);
         });
         dom.addEventListener('mousemove', () => {
-            throttle(Count, 1000)();
+            throttle(Count, 1000)(1, 2, 3);
         });
     </script>
 </body>
