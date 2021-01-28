@@ -51,8 +51,6 @@
                 let now = Date.now();
                 if (now - previouse > delay) {
                     fn.apply(this, arguments);
-                    console.log(111);
-                    console.log(arguments);
                     previouse = now;
                 };
             };
