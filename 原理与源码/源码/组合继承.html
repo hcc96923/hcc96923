@@ -8,20 +8,14 @@
 </head>
 <body>
     <script>
-        function Parent(value) {
-            this.value = value;
+        function inherit(Son, Father) {
+            // 创建对象，创建父类原型的一个副本
+            let prototype = Object.create(Father.prototype);
+            // 增强对象，弥补因重写原型而失去的默认的constructor 属性
+            prototype.construct = Son;
+            // 指定对象，将新创建的对象赋值给子类的原型
+            Son.prototype = prototype;
         }
-        Parent.prototype.getValue = function() {
-            console.log(this.value);
-        }
-        function Child(value) {
-            Parent.call(this, value);
-        }
-        Child.prototype = new Parent();
-        const child = new Child(100);
-        child.getValue();
-        console.log(child instanceof Parent);
-        // 以上继承的方式核心是在子类的构造函数中通过 Parent.call(this) 继承父类的属性，然后改变子类的原型为 new Parent() 来继承父类的函数
     </script>
 </body>
 </html>
