@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #left {
+            width: 100px;
+            height: 100%;
+            float: left;
+            background-color: black;
+        }
+        #right {
+            height: 100%;
+            margin-left: 100px;
+            background-color: aqua;
+        }
+        .header {
+            width: 100%;
+            height: 100px;
+            background-color: black;
+        }
+        .container {
+            display: flex;
+            width: 100%;
+            height: 500px;
+        }
+        .container .left {
+            width: 100px;
+            background-color: aquamarine;
+            height: 100%;
+        }
+        .container .center {
+            flex: 1;
+            background-color: blue;
+        }
+        .container .right {
+            width: 100px;
+            height: 100%;
+            background-color: bisque;
+        }
+    </style>
+</head>
+<body>
+    <div id="left">LLLLLLLLLLLLLLLL</div>
+    <div id="right">RRRRRRRRRRRRRRR</div>
+    <div class="header"></div>
+    <div class="container">
+        <div class="left"></div>
+        <div class="center"></div>
+        <div class="right"></div>
+    </div>
+    <script>
+        // 组合继承
+        function inherit(Son, Father) {
+            // 创建一个父类对原型副本
+            const prototype = Object.create(Father);
+            // 解决因创建原型导致原型构造函数丢失的问题
+            prototype.constructor = Son;
+            // 将父类的原型赋值给子类
+            Son.prototype = prototype;
+        };
+        // 实现new
+        function myNew(fn, ...args) {
+            // 提供构造函数的原型对象
+            const instance = Object.create(fn.prototype);
+            // 执行构造函数
+            const result = fn.apply(instance, args);
+            // 构造函数返回的是对象或者不是对象
+            return typeof result === 'object' ? result : instance;
+        }
+        // 实现create
+        function myCreate(proto) {
+            function Fn() {};
+            Fn.prototype = proto;
+            Fn.prototype.constructor = Fn;
+            return new Fn();
+        };
+        // 数组去重
+        const repeatArray = [1, 2, 1, 3, 4, 3];
+        // 利用Sets的元素不重复特性
+        console.log([...new Set(repeatArray)]);
+        // 利用对象特性
+        function uniqueArray(array) {
+            const result = {};
+            return array.filter(item => {
+                return result.hasOwnProperty(item + typeof item) ? false : result[item + typeof item] = true;
+            });
+        };
+        // 利用数组索引特性
+        function uniqueArrays(array) {
+            return array.filter((item, index, array) => {
+                return array.indexOf(item) === index;
+            });
+        };
+        console.log(uniqueArray(repeatArray));
+        console.log(uniqueArrays(repeatArray));
+        // 数组扁平化
+        const deepArray = [1, [2, 3, [4, 5, 6]]];
+        console.log(deepArray.flat(Infinity));
+        function flatArray(array) {
+            return array.reduce((result, item, index, array) => {
+                if (Object.prototype.toString.call(item) === '[object Array]') {
+                    return [...result, ...flatArray(item)];
+                } else {
+                    return [...result, item];
+                };
+            }, []);
+        };
+        console.log(flatArray(deepArray));
+        const object = {
+            id: 1,
+            detail: {
+                name: 'hcc',
+                age: 24,
+                gender: true,
+                other: {
+                    date: new Date(),
+                    say: function() {
+                        console.log('Hello');
+                    }
+                }
+            }
+        };
+        // 实现深拷贝
+        function deepCopy(object, hash = new WeakMap()) {
+            if (object instanceof RegExp) {
+                return RegExp(object);
+            };
+            if (object instanceof Date) {
+                return Date(object);
+            };
+            if (object === null || typeof object !== 'object') {
+                return object;
+            };
+            if (hash.has(object)) {
+                return object;
+            };
+            const result = new object.constructor();
+            hash.set(object, result);
+            for (const key in object) {
+                if (object.hasOwnProperty(key)) {
+                    result[key] = deepCopy(object[key], hash);
+                };
+            };
+            return result;
+        };
+        // 实现浅拷贝
+        function shallowCopy(object) {
+            const result = {};
+            for (const key in object) {
+                result[key] = object[key];
+            };
+            return result;
+        };
+        const deep_copy = deepCopy(object);
+        deep_copy.id = 2;
+        console.log(deep_copy);
+        const shallow_copy = shallowCopy(object);
+        shallow_copy.id = 3;
+        console.log(shallow_copy);
+        // 实现柯里化
+        function add(a, b, c) {
+            return a + b + c;
+        };
+        function currying(fn, ...args) {
+            if (fn.length > args.length) {
+                return (...newArgs) => currying(fn, ...args, ...newArgs);
+            } else {
+                return fn(...args);
+            };
+        };
+        console.log(currying(add)(1)(2)(3));
+        console.log(currying(add)(1, 2, 3));
+        // 实现instanceof
+        function myInstanceOf(left, right) {
+            let prototype = Object.getPrototypeOf(left);
+            while (left) {
+                if (prototype === null) {
+                    return false;
+                };
+                if (prototype === right.prototype) {
+                    return true;
+                };
+                prototype = Object.getPrototypeOf(prototype);
+            };
+        };
+        // 实现AJAX
+        function AJAX() {
+            return new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.open(url, method, true);
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        resolve(xhr.responseText);
+                    } else {
+                        reject('请求错误')
+                    };
+                }
+                xhr.send(null);
+            });
+        };
+        function Test(...args) {
+            console.log(args);
+        };
+        // 实现call
+        Function.prototype.myCall = function(context, ...args) {
+            context = Object(context) || window;
+            const fn = Symbol('fn');
+            context[fn] = this;
+            const result = context[fn](...args);
+            delete context[fn];
+            return result;
+        };
+        Test.myCall(this, 1, 2,3);
+        // 实现apply
+        Function.prototype.myApply = function(context, args) {
+            context = Object(context) || window;
+            const fn = Symbol("fn");
+            context[fn] = this;
+            const result = context[fn](...args);
+            delete context[fn];
+            return result;
+        };
+        // 实现bind
+        Function.prototype.myBind = function(context, ...args) {
+            return (...newArgs) => this.call(context, ...args, ...newArgs);
+        };
+        // 实现防抖
+        function debounce(fn, delay) {
+            return function() {
+                fn.id && clearTimeout(fn.id);
+                fn.id = setTimeout(() => {
+                    fn.call(this, arguments);
+                }, delay);
+            };
+        };
+        // 实现节流
+        function throttle(fn, delay) {
+            let open = false;
+            return function() {
+                if (!open) {
+                    open = true;
+                    setTimeout(() => {
+                        fn.call(this, arguments);
+                        open = false;
+                    }, delay);
+                };
+            };
+        };
+        function throttles(fn, delay) {
+            let previous = 0;
+            return function() {
+                let now = Date.now();
+                if (now - previous > delay) {
+                    fn.apply(this, arguments);
+                    previous = now;
+                };
+            };
+        };
+        Promise.prototype.all = function(promiseArray) {
+            return new Promise((resolve, reject) => {
+                for (let index = 0; index < promiseArray.length; index++) {
+                    promiseArray[index]
+                        .then(work => {
+                            workArray[index] = work;
+                            count++;
+                            if (count === promiseArray.length) {
+                                resolve(workArray);
+                            };
+                        })
+                        .catch(error => {
+                            reject(error);
+                        });
+                };
+            });
+        };
+    </script>
+</body>
+</html>
